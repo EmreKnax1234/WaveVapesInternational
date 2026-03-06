@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WaveVapes • Liquid Bestellung</title>
+    <title>WaveVapes • Liquid Bestellung mit Versand</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -43,8 +43,6 @@
         @media (max-width: 1023px) { #notification-toast { bottom: 15px !important; } }
         #notification-toast.visible { opacity: 1; transform: translateX(-50%) translateY(-8px); }
         #notification-toast.deal, #notification-toast.mystery, #notification-toast.discount { font-weight: 700; }
-
-        /* ─── REFERRAL-WARN-BAUM ─────────────────────────────────────── */
         .referral-warning-tree {
             background: rgba(15, 15, 15, 0.92);
             border-bottom: 2px solid #991b1b;
@@ -64,10 +62,10 @@
             font-size: 2.1rem;
             line-height: 1;
             display: inline-block;
-            animation: 
+            animation:
                 glowRed 2.8s ease-in-out infinite alternate,
                 sway 9s ease-in-out infinite;
-            text-shadow: 
+            text-shadow:
                 0 0 12px #ef4444,
                 0 0 24px #dc2626,
                 0 0 40px #b91c1c;
@@ -89,17 +87,15 @@
         .whatsapp-link:hover {
             color: #128C7E;
         }
-
         @keyframes glowRed {
-            0%   { text-shadow: 0 0 12px #ef4444, 0 0 24px #dc2626, 0 0 40px #b91c1c; }
+            0% { text-shadow: 0 0 12px #ef4444, 0 0 24px #dc2626, 0 0 40px #b91c1c; }
             100% { text-shadow: 0 0 20px #f87171, 0 0 45px #ef4444, 0 0 70px #dc2626; }
         }
         @keyframes sway {
-            0%   { transform: rotate(-3.5deg); }
-            50%  { transform: rotate(3.5deg); }
+            0% { transform: rotate(-3.5deg); }
+            50% { transform: rotate(3.5deg); }
             100% { transform: rotate(-3.5deg); }
         }
-
         .tornado-image { width: 100%; height: 160px; object-fit: cover; border-radius: 16px; margin-bottom: 12px; background: #1f2937; }
         .price-row { display: flex; justify-content: center; align-items: baseline; gap: 16px; margin-bottom: 12px; }
         .discount-price { font-size: 1.35rem; text-decoration: line-through; color: #9ca3af; }
@@ -127,7 +123,6 @@
     </style>
 </head>
 <body class="wave-bg text-white min-h-screen">
-
     <!-- NAVBAR -->
     <nav class="bg-black/90 backdrop-blur-xl border-b border-cyan-400/30 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
@@ -152,16 +147,15 @@
         </div>
     </nav>
 
-    <!-- REFERRAL BAUM WARNUNG – ganz oben, sticky -->
+    <!-- REFERRAL BAUM WARNUNG -->
     <div class="referral-warning-tree sticky top-0 z-40">
         <div class="tree-container flex flex-col sm:flex-row items-center justify-center flex-wrap gap-2 sm:gap-5 px-4 text-center sm:text-left">
             <div class="christmas-tree">🎄</div>
             <div class="warning-text text-base sm:text-lg">
-                Referral-System <strong>noch in Entwicklung</strong> – Fehler möglich! 🚧 
-                Wir fixen das schnellstmöglich.
+                Referral-System <strong>noch in Entwicklung</strong> – Fehler möglich! 🚧 Wir fixen das schnellstmöglich.
                 <br class="sm:hidden">
-                <a href="https://chat.whatsapp.com/LM0rL2VeEDQAnyw83LDLK9" 
-                   target="_blank" 
+                <a href="https://chat.whatsapp.com/LM0rL2VeEDQAnyw83LDLK9"
+                   target="_blank"
                    rel="noopener noreferrer"
                    class="whatsapp-link">
                     → WhatsApp-Gruppe (Hilfe & Support)
@@ -171,12 +165,11 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-8 pb-20">
-
-        <!-- HERO -->
+        <!-- HERO – angepasst für Versand -->
         <div class="text-center mb-12">
             <div class="inline-flex items-center gap-2 bg-white/10 px-5 py-1.5 rounded-3xl text-xs mb-6 backdrop-blur-md">
                 <div class="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-ping"></div>
-                Nur für Freunde • Persönliche Abholung
+                Nur für Freunde • Versand per DHL
             </div>
             <h2 class="hero-title text-5xl sm:text-6xl font-bold tracking-tighter neon-text mb-3">Bestelle deine Liquids und Vapes</h2>
             <p class="hero-subtitle text-xl sm:text-2xl text-cyan-200 max-w-md mx-auto">8 € pro Flasche • 10 ml • Nikotin frei wählbar (10 oder 20 mg)</p>
@@ -184,6 +177,11 @@
             <div class="mt-4 inline-flex items-center gap-3 bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-400/30 hover:border-emerald-400 px-7 py-3 rounded-3xl text-emerald-300 text-base font-semibold transition-all">
                 <i class="fa-solid fa-gift text-2xl"></i>
                 <span>Ab 100€ Bestellwert gibt's eine <span class="text-white font-bold underline">Mystery Vape gratis</span> dazu! 🎁</span>
+            </div>
+            <!-- NEUER GRATIS-VERSAND HINWEIS -->
+            <div class="mt-4 inline-flex items-center gap-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-400/30 px-7 py-3 rounded-3xl text-amber-300 text-base font-semibold transition-all">
+                <i class="fa-solid fa-truck text-2xl"></i>
+                <span>Gratis Versand ab <span class="text-white font-bold">150 €</span> Bestellwert! 🚚</span>
             </div>
         </div>
 
@@ -196,17 +194,14 @@
                     <p id="user-name-display" class="text-2xl font-semibold group-hover:text-cyan-200 transition">Bitte Namen eingeben</p>
                 </div>
             </div>
-
-            <!-- HIER IST DER NEUE WARN-HINWEIS -->
             <div class="mb-5 p-4 bg-red-950/70 border border-red-600/60 rounded-2xl text-red-200 text-sm leading-relaxed">
                 <div class="flex items-center gap-2 mb-1.5 font-bold text-red-300">
                     <i class="fa-solid fa-triangle-exclamation text-lg"></i>
                     Referral-System noch in Entwicklung!
                 </div>
                 <p>Derzeit können Fehler auftreten (Link nicht erstellbar, Referrals nicht sichtbar, Bonus nicht verfügbar etc.).</p>
-                <p class="mt-1">Wenn Hilfe benötigt, dann in die Whatsapp Gruppe kommen und wir helfen ihnen gerne weiter! Wir arbeiten intensiv daran – danke für dein Verständnis! 🚧</p>
+                <p class="mt-1">Wir arbeiten intensiv daran danke für dein Verständnis! 🚧</p>
             </div>
-
             <div class="flex items-center gap-4 flex-wrap justify-end">
                 <button onclick="event.stopImmediatePropagation(); showOrderHistory()"
                         class="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-cyan-300 hover:text-white px-4 py-2 rounded-2xl text-sm font-medium transition-all">
@@ -229,18 +224,16 @@
 
         <!-- TABS -->
         <div id="category-tabs" class="category-tabs flex overflow-x-auto gap-x-6 pb-4 border-b border-white/10 mb-8 text-base whitespace-nowrap"></div>
-
         <!-- SEARCH -->
         <div class="relative mb-8">
             <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-cyan-400"></i>
             <input id="search-input" type="text" placeholder="Flavor suchen..." onkeyup="filterProducts()" class="w-full bg-zinc-900 border border-white/10 focus:border-cyan-400 rounded-3xl pl-12 pr-6 py-4 text-base outline-none transition">
         </div>
-
         <!-- PRODUCTS GRID -->
         <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6"></div>
     </div>
 
-    <!-- FLOATING CART (mobile) -->
+    <!-- FLOATING CART BUTTON (mobile) -->
     <button onclick="toggleCart()" class="fixed bottom-6 right-6 lg:hidden bg-gradient-to-r from-cyan-400 to-purple-500 text-black w-14 h-14 rounded-3xl shadow-2xl flex items-center justify-center z-50">
         <i class="fa-solid fa-cart-shopping text-3xl"></i>
     </button>
@@ -253,8 +246,6 @@
                 <button onclick="toggleCart()" class="text-4xl text-gray-400 hover:text-white">✕</button>
             </div>
             <div id="cart-items-list" class="space-y-6 min-h-[300px]"></div>
-
-            <!-- RABATT / REFERRAL EINGABE -->
             <div class="mt-8 pt-6 border-t border-white/10">
                 <p class="text-xs uppercase tracking-widest text-gray-400 mb-3">Rabattcode oder Referral</p>
                 <div class="flex flex-col gap-3">
@@ -267,28 +258,35 @@
                 </div>
                 <div id="discount-status" class="mt-3 text-sm min-h-[24px]"></div>
             </div>
-
             <div class="mt-10 pt-8 border-t border-white/10">
                 <div class="flex justify-between text-2xl font-semibold mb-2">
                     <span>Gesamt</span>
                     <span id="cart-total-price" class="text-cyan-300">0,00 €</span>
                 </div>
-                <p class="text-xs text-gray-400">Zahlung bei Abholung</p>
+                <p class="text-xs text-gray-400">Zahlung per Überweisung • Versand nach Zahlungseingang</p>
+                <p id="cart-shipping-note" class="text-xs text-emerald-400 mt-1"></p>
             </div>
             <button onclick="placeOrder()" class="mt-8 w-full py-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 text-black font-bold text-xl rounded-3xl transition-all">BESTELLUNG ABSCHICKEN</button>
             <button onclick="clearCart()" class="mt-4 text-red-400 text-sm w-full py-3">Warenkorb leeren</button>
         </div>
     </div>
 
-    <!-- SUCCESS MODAL -->
+    <!-- SUCCESS MODAL mit deinen Bankdaten -->
     <div id="success-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[9999]">
         <div class="bg-zinc-900 max-w-lg w-full mx-4 rounded-3xl p-8 text-center">
             <div class="mx-auto w-20 h-20 bg-emerald-400/10 text-emerald-400 rounded-3xl flex items-center justify-center text-6xl mb-8">✓</div>
             <h3 class="text-4xl font-bold mb-3">Bestellung gesendet!</h3>
             <p class="text-cyan-300 text-xl mb-8">Bestellnummer: <span id="success-order-id" class="font-mono font-bold"></span></p>
+            
+            <!-- DEINE BANKDATEN -->
+            <div class="bg-zinc-950 border border-cyan-400/30 rounded-2xl p-6 mb-8 text-left">
+                <h4 class="text-emerald-400 font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-money-bill-transfer"></i> Bitte jetzt überweisen</h4>
+                <div id="bank-payment-info" class="space-y-4 text-sm"></div>
+            </div>
+
             <div id="success-details" class="text-left bg-black/60 rounded-2xl p-6 text-sm mb-8 max-h-64 overflow-auto"></div>
             <button onclick="closeSuccessModal()" class="bg-white text-black px-14 py-5 rounded-3xl font-semibold text-lg">Zurück zum Shop</button>
-            <p class="text-[10px] text-gray-500 mt-8">Ich erhalte deine Bestellung per E-Mail und bereite sie vor.</p>
+            <p class="text-[10px] text-gray-500 mt-8">Ich erhalte deine Bestellung per E-Mail und warte auf den Zahlungseingang.<br>Danach versende ich sofort per DHL.</p>
         </div>
     </div>
 
@@ -350,20 +348,17 @@
         </div>
     </div>
 
-    <!-- MEINE REFERRALS & BONUS MODAL -->
+    <!-- MEINE REFERRALS MODAL -->
     <div id="referrals-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[9999]">
         <div class="bg-zinc-900 max-w-2xl w-full mx-4 rounded-3xl p-8 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-3xl font-bold neon-text">Meine Referrals & Bonus</h3>
                 <button onclick="closeReferralsModal()" class="text-4xl text-gray-400 hover:text-white">✕</button>
             </div>
-
-            <!-- Optional: Warnhinweis auch hier im Modal -->
             <div class="mb-6 p-4 bg-red-950/60 border border-red-600/50 rounded-2xl text-red-200 text-sm text-center">
                 <strong>Referral-Funktion noch in Entwicklung</strong><br>
                 Fehler möglich – wir fixen das schnellstmöglich!
             </div>
-
             <div id="referrals-list" class="space-y-5"></div>
             <p id="no-referrals" class="hidden text-center text-gray-400 py-12">Noch keine Freunde haben deinen Code eingelöst.</p>
         </div>
@@ -382,6 +377,17 @@
         const MYSTERY_ID = 999;
         const fakeNames = ["Tim","Anna","Max","Sophie","Luca","Mia","Felix","Emma","Noah","Lena","Leon","Julia","Paul","Laura","Ben","Sarah","David","Hannah","Jonas","Lea"];
         const NICOTINE_OPTIONS = ["10 mg", "20 mg"];
+
+        // ====================== DEINE BANKDATEN ======================
+        const BANK_OWNER = "Jakob David Hellrung";
+        const BANK_IBAN   = "DE38360200300003395812";
+        const BANK_BIC    = "NBAGDE3EXXX";
+        const BANK_NAME   = "NATIONAL-BANK AG";
+
+        // ====================== VERSAND ======================
+        const SHIPPING_COST = 5.99;
+        const FREE_SHIPPING_THRESHOLD = 150;
+
         let allProducts = [
             { id: 1, name: "Apple Peach", category: "Normale Sorten", isNew: false, available: true, price: 8 },
             { id: 2, name: "Blueberry", category: "Normale Sorten", isNew: false, available: true, price: 8 },
@@ -418,6 +424,7 @@
             { id: 33, name: "WaveVapes 30000 Cherry Ice", category: "WaveVapes Tornado 30000", isNew: true, available: true, price: 20.00, image: "tornado-2.jpg" },
             { id: 34, name: "WaveVapes 30000 Peach Berry", category: "WaveVapes Tornado 30000", isNew: true, available: true, price: 20.00, image: "tornado-3.jpg" }
         ];
+
         let cart = [];
         let currentUserName = localStorage.getItem("wavevapes_username") || "";
         let currentCategoryFilter = "Alle";
@@ -430,11 +437,41 @@
         let discountPercent = 0;
         let orderHistory = [];
 
+        // ====================== VERSAND-HILFSFUNKTIONEN ======================
+        function getSubtotal() {
+            return cart.reduce((sum, item) => {
+                if (item.id === MYSTERY_ID) return sum;
+                return sum + item.qty * (item.price || 8);
+            }, 0);
+        }
+
+        function getProductTotal() {
+            let subtotal = getSubtotal();
+            const tornadoQty = getTornadoQuantity();
+            const freeBottles = Math.floor(tornadoQty / 4);
+            const savings = freeBottles * 20.00;
+            let total = Math.max(0, subtotal - savings);
+            if (discountPercent > 0) {
+                const discountAmount = total * (discountPercent / 100);
+                total = Math.max(0, total - discountAmount);
+            }
+            return total;
+        }
+
+        function getShippingCost() {
+            const productTotal = getProductTotal();
+            return productTotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+        }
+
+        function calculateCartTotal() {
+            return getProductTotal() + getShippingCost();
+        }
+
+        // ====================== ALLE ANDEREN FUNKTIONEN (unverändert bis auf die angepassten) ======================
         function loadOrderHistory() {
             const saved = localStorage.getItem("wavevapes_orderhistory");
             if (saved) orderHistory = JSON.parse(saved);
         }
-
         function saveToHistory(orderNumber, totalPrice, orderText) {
             const order = {
                 id: orderNumber,
@@ -446,7 +483,6 @@
             if (orderHistory.length > 15) orderHistory.pop();
             localStorage.setItem("wavevapes_orderhistory", JSON.stringify(orderHistory));
         }
-
         function showOrderHistory() {
             if (!currentUserName) {
                 alert("Bitte zuerst deinen Namen eingeben!");
@@ -458,12 +494,10 @@
             modal.classList.remove("hidden");
             modal.classList.add("flex");
         }
-
         function closeHistoryModal() {
             document.getElementById("history-modal").classList.add("hidden");
             document.getElementById("history-modal").classList.remove("flex");
         }
-
         function renderHistoryModal() {
             const container = document.getElementById("history-list");
             const noEl = document.getElementById("no-history");
@@ -487,39 +521,32 @@
                 container.appendChild(div);
             });
         }
-
-        // ====================== REFERRAL CONSENT & LINK-MODAL ======================
         function showReferralConsentModal() {
             const modal = document.getElementById("referral-consent-modal");
             modal.classList.remove("hidden");
             modal.classList.add("flex");
         }
-
         function closeReferralConsent() {
             const modal = document.getElementById("referral-consent-modal");
             modal.classList.add("hidden");
             modal.classList.remove("flex");
         }
-
         function confirmReferralConsent() {
             localStorage.setItem("referral_consent_given", "true");
             closeReferralConsent();
             generateReferralLink();
         }
-
         function showReferralLinkModal(link) {
             document.getElementById("referral-link-input").value = link;
             const modal = document.getElementById("referral-link-modal");
             modal.classList.remove("hidden");
             modal.classList.add("flex");
         }
-
         function closeReferralLinkModal() {
             const modal = document.getElementById("referral-link-modal");
             modal.classList.add("hidden");
             modal.classList.remove("flex");
         }
-
         function copyReferralLink() {
             const input = document.getElementById("referral-link-input");
             input.select();
@@ -535,11 +562,9 @@
                     throw new Error("execCommand fehlgeschlagen");
                 }
             } catch (err) {
-                alert("Kopieren fehlgeschlagen.\n\nBitte langen Druck auf dem Handy machen und „Kopieren“ auswählen.");
+                alert("Kopieren fehlgeschlagen.\n\nBitte langen Druck auf dem Text machen und „Kopieren“ auswählen.");
             }
         }
-
-        // ====================== REFERRAL-SYSTEM ======================
         async function shareReferral() {
             if (!currentUserName) {
                 alert("Bitte zuerst deinen Namen eingeben!");
@@ -552,7 +577,6 @@
             }
             showReferralConsentModal();
         }
-
         async function generateReferralLink() {
             const toast = document.getElementById('notification-toast');
             try {
@@ -591,7 +615,6 @@
                 alert("Fehler beim Generieren des Links:\n\n" + e.message + "\n\nBitte schicke mir EXAKT diesen Alert-Text + einen Screenshot der Console (F12 → Console).");
             }
         }
-
         async function checkReferralCode() {
             const urlParams = new URLSearchParams(window.location.search);
             const refCode = urlParams.get("ref");
@@ -620,7 +643,6 @@
                 statusEl.innerHTML = `<span class="text-red-400">Verbindungsfehler – Seite neu laden</span>`;
             }
         }
-
         function showReferralToast() {
             const toast = document.getElementById('notification-toast');
             notificationCyclePaused = true;
@@ -636,7 +658,6 @@
                 }, 600);
             }, 4500);
         }
-
         async function showMyReferrals() {
             if (!currentUserName) {
                 alert("Bitte zuerst deinen Namen eingeben!");
@@ -715,7 +736,6 @@
                 listEl.innerHTML = `<p class="text-red-400 text-center py-8">Fehler beim Laden: ${err.message}</p>`;
             }
         }
-
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
                 const toast = document.getElementById('notification-toast');
@@ -727,12 +747,10 @@
                 alert("Kopieren fehlgeschlagen – bitte manuell kopieren: " + text);
             });
         }
-
         function closeReferralsModal() {
             document.getElementById("referrals-modal").classList.add("hidden");
             document.getElementById("referrals-modal").classList.remove("flex");
         }
-
         async function claimBonus(referralCode) {
             if (!referralCode || referralCode.trim() === '') {
                 alert("Kein gültiger Referral-Code gefunden. Bitte Seite neu laden oder Support kontaktieren.");
@@ -759,7 +777,6 @@
                 alert("Fehler beim Abholen des Bonus: " + err.message);
             }
         }
-
         async function applyDiscountCode() {
             const input = document.getElementById("discount-input").value.trim().toUpperCase();
             const statusEl = document.getElementById("discount-status");
@@ -805,7 +822,6 @@
             }
             statusEl.innerHTML = `<span class="text-red-400">Ungültiger Code</span>`;
         }
-
         function showDiscountToast() {
             const toast = document.getElementById('notification-toast');
             notificationCyclePaused = true;
@@ -821,14 +837,6 @@
                 }, 600);
             }, 3200);
         }
-
-        function getSubtotal() {
-            return cart.reduce((sum, item) => {
-                if (item.id === MYSTERY_ID) return sum;
-                return sum + item.qty * (item.price || 8);
-            }, 0);
-        }
-
         function manageMysteryVape() {
             const subtotal = getSubtotal();
             const hasMystery = cart.some(item => item.id === MYSTERY_ID);
@@ -839,7 +847,6 @@
                 cart = cart.filter(item => item.id !== MYSTERY_ID);
             }
         }
-
         function showMysteryToast() {
             const toast = document.getElementById('notification-toast');
             notificationCyclePaused = true;
@@ -855,7 +862,6 @@
                 }, 600);
             }, 4800);
         }
-
         function generateNotificationList() {
             notificationList = [];
             const availableProducts = allProducts.filter(p => p.available);
@@ -869,7 +875,6 @@
             localStorage.setItem('wavevapes_notifications', JSON.stringify(notificationList));
             localStorage.setItem('wavevapes_last_generate', Date.now());
         }
-
         function checkAndGenerateNotifications() {
             const lastGenerate = localStorage.getItem('wavevapes_last_generate');
             if (!lastGenerate || (Date.now() - lastGenerate > HOUR_MS)) {
@@ -880,7 +885,6 @@
                 else generateNotificationList();
             }
         }
-
         function showNextNotification() {
             if (notificationCyclePaused) return;
             const toast = document.getElementById('notification-toast');
@@ -889,14 +893,12 @@
             setTimeout(() => toast.classList.remove('visible'), NOTIFICATION_DURATION - 700);
             currentNotificationIndex = (currentNotificationIndex + 1) % notificationList.length;
         }
-
         function startNotificationCycle() {
             checkAndGenerateNotifications();
             showNextNotification();
             setInterval(showNextNotification, NOTIFICATION_DURATION);
             setInterval(checkAndGenerateNotifications, 60000);
         }
-
         function initialize() {
             localStorage.removeItem('wavevapes_notifications');
             localStorage.removeItem('wavevapes_last_generate');
@@ -908,13 +910,11 @@
             startNotificationCycle();
             checkReferralCode();
         }
-
         function showNameModal() {
             document.getElementById("name-modal").classList.remove("hidden");
             document.getElementById("name-modal").classList.add("flex");
             setTimeout(() => document.getElementById("name-input-field").focus(), 300);
         }
-
         function saveUserName() {
             const input = document.getElementById("name-input-field").value.trim();
             if (input.length < 3) return alert("Bitte gib deinen richtigen Namen ein (mind. 3 Zeichen)");
@@ -924,7 +924,6 @@
             document.getElementById("name-modal").classList.remove("flex");
             updateUserDisplay();
         }
-
         function updateUserDisplay() {
             const displayEl = document.getElementById("user-name-display");
             const navEl = document.getElementById("current-user-name");
@@ -936,7 +935,6 @@
                 navEl.textContent = "Name";
             }
         }
-
         function renderCategoryTabs() {
             const tabsHTML = `
                 <button onclick="setCategoryFilter('Alle')" class="px-5 py-2 transition ${currentCategoryFilter === 'Alle' ? 'tab-active' : ''}">Alle</button>
@@ -950,33 +948,17 @@
             `;
             document.getElementById("category-tabs").innerHTML = tabsHTML;
         }
-
         function setCategoryFilter(cat) {
             currentCategoryFilter = cat;
             renderCategoryTabs();
             renderProducts();
         }
-
         function getTornadoQuantity() {
             return cart.reduce((sum, item) => {
                 const prod = allProducts.find(p => p.id === item.id);
                 return (prod && prod.category === "WaveVapes Tornado 30000") ? sum + item.qty : sum;
             }, 0);
         }
-
-        function calculateCartTotal() {
-            let subtotal = getSubtotal();
-            const tornadoQty = getTornadoQuantity();
-            const freeBottles = Math.floor(tornadoQty / 4);
-            const savings = freeBottles * 20.00;
-            let total = Math.max(0, subtotal - savings);
-            if (discountPercent > 0) {
-                const discountAmount = total * (discountPercent / 100);
-                total = Math.max(0, total - discountAmount);
-            }
-            return total;
-        }
-
         function showDealToast() {
             const toast = document.getElementById('notification-toast');
             notificationCyclePaused = true;
@@ -992,7 +974,6 @@
                 }, 800);
             }, 5000);
         }
-
         function renderProducts() {
             const container = document.getElementById("products-grid");
             let html = "";
@@ -1048,7 +1029,6 @@
             });
             container.innerHTML = html || `<p class="col-span-full text-center py-16 text-gray-400">Keine Produkte gefunden.</p>`;
         }
-
         function updateNicotine(id, value) {
             let item = cart.find(i => i.id === id);
             if (item) {
@@ -1056,7 +1036,6 @@
                 updateCartDisplay();
             }
         }
-
         function changeQuantity(id, delta) {
             const product = allProducts.find(p => p.id === id);
             if (!product || !product.available) return;
@@ -1081,15 +1060,23 @@
             updateCartDisplay();
             renderProducts();
         }
-
         function updateCartDisplay() {
             const countEl = document.getElementById("cart-count-badge");
             const totalEl = document.getElementById("cart-total-price");
             const listEl = document.getElementById("cart-items-list");
+            const shippingNote = document.getElementById("cart-shipping-note");
+
             const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
             countEl.textContent = totalItems;
-            const totalPrice = calculateCartTotal();
-            totalEl.textContent = `${totalPrice.toFixed(2).replace('.', ',')} €`;
+
+            const grandTotal = calculateCartTotal();
+            totalEl.textContent = `${grandTotal.toFixed(2).replace('.', ',')} €`;
+
+            const shipping = getShippingCost();
+            shippingNote.innerHTML = shipping === 0 
+                ? `✅ Gratis Versand (ab 150 €)` 
+                : `+ ${shipping.toFixed(2).replace('.', ',')} € Versand`;
+
             if (cart.length === 0) {
                 listEl.innerHTML = `<p class="text-center py-16 text-gray-400">Dein Warenkorb ist leer</p>`;
                 return;
@@ -1111,7 +1098,6 @@
             });
             listEl.innerHTML = itemsHTML;
         }
-
         function removeCartItem(id) {
             if (id === MYSTERY_ID) return;
             cart = cart.filter(item => item.id !== id);
@@ -1119,7 +1105,6 @@
             updateCartDisplay();
             renderProducts();
         }
-
         function clearCart() {
             if (confirm("Wirklich ganzen Warenkorb leeren?")) {
                 cart = [];
@@ -1131,42 +1116,47 @@
                 toggleCart();
             }
         }
-
         function toggleCart() {
             document.getElementById("cart-sidebar").classList.toggle("translate-x-full");
         }
-
         function generateOrderNumber() {
             const now = new Date();
             const dateStr = now.getFullYear().toString().slice(2) + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0');
             return `WV-${dateStr}-${Math.floor(1000 + Math.random() * 9000)}`;
         }
-
         async function placeOrder() {
             if (!currentUserName) { alert("Bitte zuerst deinen Namen eingeben!"); showNameModal(); return; }
             if (cart.length === 0) return alert("Dein Warenkorb ist leer.");
             const orderNumber = generateOrderNumber();
-            const totalPrice = calculateCartTotal();
-            let orderText = `Name: ${currentUserName}\nBestellnummer: ${orderNumber}\nGesamt: ${totalPrice.toFixed(2).replace('.', ',')} €\n\nBestellte Produkte:\n`;
+            const finalTotal = calculateCartTotal();
+            const shipping = getShippingCost();
+
+            let orderText = `Name: ${currentUserName}\nBestellnummer: ${orderNumber}\nGesamt: ${finalTotal.toFixed(2).replace('.', ',')} €\n`;
+            orderText += shipping === 0 ? `Versand: Kostenlos (ab 150 €)\n` : `Versandkosten: ${shipping.toFixed(2).replace('.', ',')} €\n\nBestellte Produkte:\n`;
+
             cart.forEach(item => {
                 const p = item.price || 0;
                 const nic = item.nicotine ? ` (${item.nicotine})` : '';
                 orderText += `• ${item.name}${nic} × ${item.qty} = ${(item.qty * p).toFixed(2).replace('.', ',')} €\n`;
             });
+
             if (discountPercent > 0) {
                 orderText += `• Rabattcode ${appliedDiscountCode} (${discountPercent}%) angewendet\n`;
             }
-            saveToHistory(orderNumber, totalPrice, orderText);
+
+            saveToHistory(orderNumber, finalTotal, orderText);
+
             const formData = new FormData();
             formData.append("name", currentUserName);
             formData.append("bestellnummer", orderNumber);
             formData.append("produkte", orderText);
-            formData.append("gesamt", `${totalPrice.toFixed(2).replace('.', ',')} €`);
+            formData.append("gesamt", `${finalTotal.toFixed(2).replace('.', ',')} €`);
             formData.append("_subject", `WaveVapes Bestellung ${orderNumber}`);
+
             try {
                 const response = await fetch(FORMSPREE_ENDPOINT, { method: "POST", body: formData, headers: { "Accept": "application/json" } });
                 if (response.ok) {
-                    showSuccessModal(orderNumber, orderText, totalPrice);
+                    showSuccessModal(orderNumber, orderText, finalTotal);
                     cart = [];
                     appliedDiscountCode = null;
                     discountPercent = 0;
@@ -1177,24 +1167,38 @@
                 } else alert("Fehler beim Senden.");
             } catch (e) { alert("Verbindungsfehler."); }
         }
-
         function showSuccessModal(orderNumber, details, total) {
             document.getElementById("success-order-id").textContent = orderNumber;
+
+            const infoHTML = `
+                <div class="space-y-3">
+                    <div><strong>Bank:</strong> ${BANK_NAME}</div>
+                    <div><strong>Empfänger:</strong> ${BANK_OWNER}</div>
+                    <div><strong>IBAN:</strong> <span class="font-mono break-all">${BANK_IBAN}</span></div>
+                    ${BANK_BIC ? `<div><strong>BIC:</strong> ${BANK_BIC}</div>` : ''}
+                    <div><strong>Betrag:</strong> <span class="font-bold text-xl">${total.toFixed(2).replace('.', ',')} €</span></div>
+                    <div class="pt-4 border-t border-white/20">
+                        <div class="text-amber-300 text-xs tracking-wider">VERWENDUNGSZWECK (unbedingt angeben!)</div>
+                        <div class="font-mono bg-zinc-900 p-3 rounded-xl text-center text-base mt-1">${orderNumber}</div>
+                    </div>
+                </div>
+                <p class="text-[11px] text-emerald-400 mt-6">Sobald das Geld da ist, packe ich deine Bestellung und versende per DHL.</p>
+            `;
+            document.getElementById("bank-payment-info").innerHTML = infoHTML;
+
             const detailsDiv = document.getElementById("success-details");
-            detailsDiv.innerHTML = `<div class="font-mono text-xs leading-relaxed bg-black p-5 rounded-2xl">${details.replace(/\n/g, '<br>')}</div><div class="mt-6 text-right text-xl font-bold">Gesamt: ${total.toFixed(2).replace('.', ',')} €</div>`;
+            detailsDiv.innerHTML = `<div class="font-mono text-xs leading-relaxed bg-black p-5 rounded-2xl">${details.replace(/\n/g, '<br>')}</div>`;
+
             document.getElementById("success-modal").classList.remove("hidden");
             document.getElementById("success-modal").classList.add("flex");
         }
-
         function closeSuccessModal() {
             document.getElementById("success-modal").classList.add("hidden");
             document.getElementById("success-modal").classList.remove("flex");
         }
-
         function filterProducts() {
             renderProducts();
         }
-
         window.onload = initialize;
     </script>
 </body>
