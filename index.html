@@ -155,7 +155,7 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-8 pb-20">
-        <!-- HERO – International -->
+        <!-- HERO -->
         <div class="text-center mb-12">
             <div class="inline-flex items-center gap-2 bg-white/10 px-5 py-1.5 rounded-3xl text-xs mb-6 backdrop-blur-md">
                 <div class="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-ping"></div>
@@ -380,7 +380,7 @@
         // ====================== KONFIGURATION ======================
         const VALID_DISCOUNTS = { "WAVE5": 5, "Freund10": 10 };
         const REFERRAL_SERVER = "https://script.google.com/macros/s/AKfycbyLCL_owTtTs0X8wrgULsTNKNMU9TilBuljZrxco8Y9mZDkWte-gzKIsLYyZhky5qsQLQ/exec";
-        const FORMSPREE_ENDPOINT = "https://formspree.io/f/mqedvnkb";
+        const FORMSPREE_ENDPOINT = "https://formspree.io/f/xeerjpqd";   // ← NEUER LINK
         const MYSTERY_ID = 999;
         const fakeNames = ["Tim","Anna","Max","Sophie","Luca","Mia","Felix","Emma","Noah","Lena","Leon","Julia","Paul","Laura","Ben","Sarah","David","Hannah","Jonas","Lea"];
         const NICOTINE_OPTIONS = ["10 mg", "20 mg"];
@@ -557,7 +557,11 @@
             });
         }
         function showOrderHistory() {
-            if (!currentUserName) { alert("Bitte zuerst deinen Namen eingeben!"); showNameModal(); return; }
+            if (!currentUserName) {
+                alert("Bitte zuerst deinen Namen eingeben!");
+                showNameModal();
+                return;
+            }
             renderHistoryModal();
             const modal = document.getElementById("history-modal");
             modal.classList.remove("hidden");
@@ -611,7 +615,11 @@
             }
         }
         async function shareReferral() {
-            if (!currentUserName) { alert("Bitte zuerst deinen Namen eingeben!"); showNameModal(); return; }
+            if (!currentUserName) {
+                alert("Bitte zuerst deinen Namen eingeben!");
+                showNameModal();
+                return;
+            }
             if (localStorage.getItem("referral_consent_given") === "true") {
                 generateReferralLink();
                 return;
@@ -673,7 +681,11 @@
             }, 4500);
         }
         async function showMyReferrals() {
-            if (!currentUserName) { alert("Bitte zuerst deinen Namen eingeben!"); showNameModal(); return; }
+            if (!currentUserName) {
+                alert("Bitte zuerst deinen Namen eingeben!");
+                showNameModal();
+                return;
+            }
             const modal = document.getElementById("referrals-modal");
             const listEl = document.getElementById("referrals-list");
             const noEl = document.getElementById("no-referrals");
