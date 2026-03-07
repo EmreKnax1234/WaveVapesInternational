@@ -108,7 +108,6 @@
                     <p id="user-name-display" class="text-2xl font-semibold group-hover:text-cyan-200 transition">Bitte Namen eingeben</p>
                 </div>
             </div>
-            <!-- Loyalty Anzeige -->
             <div class="flex items-center justify-between bg-zinc-950/70 rounded-2xl p-4 mb-5">
                 <div class="flex items-center gap-3">
                     <i class="fa-solid fa-star text-3xl text-yellow-400"></i>
@@ -191,6 +190,7 @@
                 </div>
                 <div id="discount-status" class="mt-3 text-sm min-h-[24px]"></div>
             </div>
+
             <div class="mt-10 pt-8 border-t border-white/10">
                 <div class="flex justify-between text-2xl font-semibold mb-2">
                     <span>Gesamt</span>
@@ -198,6 +198,8 @@
                 </div>
                 <p class="text-xs text-gray-400">Zahlung per Überweisung • Versand nach Zahlungseingang</p>
                 <p id="cart-shipping-note" class="text-xs text-emerald-400 mt-1"></p>
+                <!-- NEU: Punkte-Vorschau im Warenkorb -->
+                <p id="loyalty-cart-info" class="text-emerald-400 text-xs mt-3 flex items-center gap-2 font-medium"></p>
             </div>
             <button onclick="placeOrder()" class="mt-8 w-full py-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 text-black font-bold text-xl rounded-3xl transition-all">BESTELLUNG ABSCHICKEN</button>
             <button onclick="clearCart()" class="mt-4 text-red-400 text-sm w-full py-3">Warenkorb leeren</button>
@@ -285,7 +287,6 @@
                 <h3 class="text-3xl font-bold">Meine Bestellungen</h3>
                 <button onclick="closeHistoryModal()" class="text-4xl text-gray-400 hover:text-white">✕</button>
             </div>
-            <!-- Loyalty Header -->
             <div class="bg-zinc-800 rounded-2xl p-4 mb-6 flex justify-between items-center">
                 <div><span class="text-yellow-400">Gesamt Punkte:</span> <span id="history-loyalty-points" class="font-bold text-2xl">0</span></div>
                 <div class="text-xs text-gray-400">Loyalty-System aktiv</div>
@@ -333,13 +334,11 @@
         const fakeNames = ["Tim","Anna","Max","Sophie","Luca","Mia","Felix","Emma","Noah","Lena","Leon","Julia","Paul","Laura","Ben","Sarah","David","Hannah","Jonas","Lea"];
         const NICOTINE_OPTIONS = ["10 mg", "20 mg"];
 
-        // ====================== BANKDATEN ======================
         const BANK_OWNER = "Jakob David Hellrung";
         const BANK_IBAN = "DE38360200300003395812";
         const BANK_BIC = "NBAGDE3EXXX";
         const BANK_NAME = "NATIONAL-BANK AG";
 
-        // ====================== VERSAND ======================
         const SHIPPING_COST = 4.99;
         const FREE_SHIPPING_THRESHOLD = 150;
 
@@ -966,13 +965,14 @@
             renderProducts();
         }
 
-        // ====================== CART ======================
+        // ====================== CART mit Punkte-Vorschau ======================
         function updateCartDisplay() {
             const countEl = document.getElementById("cart-count-badge");
             const totalEl = document.getElementById("cart-total-price");
             const listEl = document.getElementById("cart-items-list");
             const shippingNote = document.getElementById("cart-shipping-note");
             const addressDisplay = document.getElementById("cart-address-display");
+            const loyaltyCartInfo = document.getElementById("loyalty-cart-info");
 
             const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
             countEl.textContent = totalItems;
@@ -983,6 +983,10 @@
             const shipping = getShippingCost();
             shippingNote.innerHTML = shipping === 0 ? `✅ Gratis Versand (ab 150 €)` : `+ ${shipping.toFixed(2).replace('.', ',')} € Versand`;
 
+            // NEU: Punkte-Vorschau
+            const pointsEarned = Math.floor(grandTotal);
+            loyaltyCartInfo.innerHTML = `🎁 Mit diesem Kauf erhältst du <span class="font-bold">+${pointsEarned}</span> Loyalty-Punkte!`;
+
             if (userAddress.street) {
                 addressDisplay.innerHTML = `${userAddress.street}<br>${userAddress.zip} ${userAddress.city}`;
             } else {
@@ -991,6 +995,7 @@
 
             if (cart.length === 0) {
                 listEl.innerHTML = `<p class="text-center py-16 text-gray-400">Dein Warenkorb ist leer</p>`;
+                loyaltyCartInfo.innerHTML = "";
                 return;
             }
             let itemsHTML = "";
@@ -1063,7 +1068,6 @@
 
             saveToHistory(orderNumber, finalTotal, orderText);
 
-            // LOYALTY
             addLoyaltyPoints(finalTotal);
 
             const formData = new FormData();
