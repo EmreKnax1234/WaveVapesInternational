@@ -263,18 +263,20 @@
         </div>
     </div>
 
-    <!-- SUCCESS MODAL -->
-    <div id="success-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[9999]">
-        <div class="bg-zinc-900 max-w-lg w-full mx-4 rounded-3xl p-8 text-center">
+    <!-- SUCCESS MODAL – SCROLLBAR FIX -->
+    <div id="success-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[9999] p-4">
+        <div class="bg-zinc-900 max-w-lg w-full mx-auto rounded-3xl p-8 text-center max-h-[90vh] overflow-y-auto">
             <div class="mx-auto w-20 h-20 bg-emerald-400/10 text-emerald-400 rounded-3xl flex items-center justify-center text-6xl mb-8">✓</div>
             <h3 class="text-4xl font-bold mb-3">Bestellung gesendet!</h3>
             <p class="text-cyan-300 text-xl mb-8">Bestellnummer: <span id="success-order-id" class="font-mono font-bold"></span></p>
+            
             <div class="bg-zinc-950 border border-cyan-400/30 rounded-2xl p-6 mb-8 text-left">
                 <h4 class="text-emerald-400 font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-money-bill-transfer"></i> Bitte jetzt überweisen</h4>
                 <div id="bank-payment-info" class="space-y-4 text-sm"></div>
             </div>
-            <div id="success-details" class="text-left bg-black/60 rounded-2xl p-6 text-sm mb-8 max-h-64 overflow-auto"></div>
-            <button onclick="closeSuccessModal()" class="bg-white text-black px-14 py-5 rounded-3xl font-semibold text-lg">Zurück zum Shop</button>
+
+            <div id="success-details" class="text-left bg-black/60 rounded-2xl p-6 text-sm mb-8"></div>
+            <button onclick="closeSuccessModal()" class="bg-white text-black px-14 py-5 rounded-3xl font-semibold text-lg w-full">Zurück zum Shop</button>
             <p class="text-[10px] text-gray-500 mt-8">Ich erhalte deine Bestellung per E-Mail und warte auf den Zahlungseingang.<br>Danach versende ich sofort per DHL. <strong>Der Versand dauert in der Regel 1–3 Werktage.</strong></p>
         </div>
     </div>
@@ -380,18 +382,16 @@
         // ====================== KONFIGURATION ======================
         const VALID_DISCOUNTS = { "WAVE5": 5, "Freund10": 10 };
         const REFERRAL_SERVER = "https://script.google.com/macros/s/AKfycbyLCL_owTtTs0X8wrgULsTNKNMU9TilBuljZrxco8Y9mZDkWte-gzKIsLYyZhky5qsQLQ/exec";
-        const FORMSPREE_ENDPOINT = "https://formspree.io/f/xeerjpqd";   // ← NEUER LINK
+        const FORMSPREE_ENDPOINT = "https://formspree.io/f/xeerjpqd";
         const MYSTERY_ID = 999;
         const fakeNames = ["Tim","Anna","Max","Sophie","Luca","Mia","Felix","Emma","Noah","Lena","Leon","Julia","Paul","Laura","Ben","Sarah","David","Hannah","Jonas","Lea"];
         const NICOTINE_OPTIONS = ["10 mg", "20 mg"];
 
-        // ====================== DEINE BANKDATEN ======================
         const BANK_OWNER = "Jakob David Hellrung";
         const BANK_IBAN = "DE38360200300003395812";
         const BANK_BIC = "NBAGDE3EXXX";
         const BANK_NAME = "NATIONAL-BANK AG";
 
-        // ====================== VERSAND ======================
         const SHIPPING_COST = 4.99;
         const FREE_SHIPPING_THRESHOLD = 150;
 
@@ -470,7 +470,7 @@
             updateCartDisplay();
         }
 
-        // ====================== VERSAND-HILFSFUNKTIONEN ======================
+        // ====================== VERSAND ======================
         function getSubtotal() {
             return cart.reduce((sum, item) => item.id === MYSTERY_ID ? sum : sum + item.qty * (item.price || 8), 0);
         }
