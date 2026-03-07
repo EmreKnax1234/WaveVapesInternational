@@ -198,6 +198,7 @@
                 </div>
                 <p class="text-xs text-gray-400">Zahlung per Überweisung • Versand nach Zahlungseingang</p>
                 <p id="cart-shipping-note" class="text-xs text-emerald-400 mt-1"></p>
+                <!-- NEU: Punkte-Vorschau im Warenkorb -->
                 <p id="loyalty-cart-info" class="text-emerald-400 text-xs mt-3 flex items-center gap-2 font-medium"></p>
             </div>
             <button onclick="placeOrder()" class="mt-8 w-full py-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 text-black font-bold text-xl rounded-3xl transition-all">BESTELLUNG ABSCHICKEN</button>
@@ -341,7 +342,7 @@
         const SHIPPING_COST = 4.99;
         const FREE_SHIPPING_THRESHOLD = 150;
 
-        // ====================== LOYALTY SYSTEM (nur einmal einlösbar) ======================
+        // ====================== LOYALTY SYSTEM ======================
         const LOYALTY_PER_EURO = 1;
         const REWARDS = [
             { points: 300, code: "LOYAL5", discount: 5, text: "5 € Gutschein" },
@@ -389,7 +390,6 @@
         let currentUserName = localStorage.getItem("wavevapes_username") || "";
         let userAddress = JSON.parse(localStorage.getItem("wavevapes_address")) || {};
         let loyaltyPoints = parseInt(localStorage.getItem("wavevapes_loyalty_points")) || 0;
-        let redeemedRewards = JSON.parse(localStorage.getItem("wavevapes_redeemed_rewards")) || [];
         let currentCategoryFilter = "Alle";
         let notificationList = [];
         const NOTIFICATION_DURATION = 6500;
@@ -410,7 +410,7 @@
             if (pointsEl) pointsEl.textContent = loyaltyPoints;
             if (historyPoints) historyPoints.textContent = loyaltyPoints;
 
-            let nextReward = REWARDS.find(r => loyaltyPoints < r.points && !redeemedRewards.includes(r.code)) || { points: 9999, text: "MAXIMAL" };
+            let nextReward = REWARDS.find(r => loyaltyPoints < r.points) || { points: 9999, text: "MAXIMAL" };
             const needed = Math.max(0, nextReward.points - loyaltyPoints);
             if (progressText) progressText.innerHTML = `Nächster Bonus in <span class="font-bold">${needed}</span> Punkten`;
             const percent = Math.min(100, Math.floor((loyaltyPoints / nextReward.points) * 100));
@@ -425,15 +425,13 @@
 
         function checkAndAutoRedeemLoyalty() {
             for (let reward of REWARDS) {
-                if (loyaltyPoints >= reward.points && !redeemedRewards.includes(reward.code) && !appliedDiscountCode) {
-                    if (confirm(`🎉 Du hast genug Punkte für einen ${reward.text}!\nMöchtest du ihn jetzt einlösen? (nur einmal möglich)`)) {
+                if (loyaltyPoints >= reward.points && !appliedDiscountCode) {
+                    if (confirm(`🎉 Du hast genug Punkte für einen ${reward.text}!\nMöchtest du ihn jetzt einlösen?`)) {
                         discountPercent = reward.discount;
                         appliedDiscountCode = reward.code;
                         loyaltyPoints -= reward.points;
-                        redeemedRewards.push(reward.code);
                         localStorage.setItem("wavevapes_loyalty_points", loyaltyPoints);
-                        localStorage.setItem("wavevapes_redeemed_rewards", JSON.stringify(redeemedRewards));
-                        document.getElementById("discount-status").innerHTML = `<span class="text-emerald-400">✓ ${reward.code} eingelöst (nur einmal möglich)</span>`;
+                        document.getElementById("discount-status").innerHTML = `<span class="text-emerald-400">✓ ${reward.code} automatisch eingelöst!</span>`;
                         updateLoyaltyDisplay();
                         updateCartDisplay();
                         return;
@@ -442,372 +440,32 @@
             }
         }
 
-        // ====================== RABATTCODE ======================
-        async function applyDiscountCode() {
-            const input = document.getElementById("discount-input").value.trim().toUpperCase();
-            const statusEl = document.getElementById("discount-status");
-            if (!input) return statusEl.innerHTML = `<span class="text-red-400">Bitte Code eingeben</span>`;
-
-            if (input.startsWith("LOYAL") && redeemedRewards.includes(input)) {
-                return statusEl.innerHTML = `<span class="text-red-400">Dieser Loyalty-Code wurde bereits eingelöst</span>`;
-            }
-
-            if (VALID_DISCOUNTS[input]) {
-                discountPercent = VALID_DISCOUNTS[input];
-                appliedDiscountCode = input;
-                statusEl.innerHTML = `<span class="text-emerald-400">✓ ${input} angewendet (${discountPercent}% Rabatt)</span>`;
-                updateCartDisplay();
-                showDiscountToast();
-                return;
-            }
-            statusEl.innerHTML = `<span class="text-red-400">Ungültiger Code</span>`;
+        // ====================== ADRESSE ======================
+        function showAddressModal() {
+            document.getElementById("addr-street").value = userAddress.street || "";
+            document.getElementById("addr-zip").value = userAddress.zip || "";
+            document.getElementById("addr-city").value = userAddress.city || "";
+            const modal = document.getElementById("address-modal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
         }
-        function showDiscountToast() {
-            const toast = document.getElementById('notification-toast');
-            notificationCyclePaused = true;
-            toast.classList.add('discount');
-            toast.innerHTML = `🎟️ <strong>${appliedDiscountCode} aktiviert!</strong>`;
-            toast.classList.add('visible');
-            setTimeout(() => {
-                toast.classList.remove('visible');
-                setTimeout(() => {
-                    toast.classList.remove('discount');
-                    notificationCyclePaused = false;
-                    showNextNotification();
-                }, 600);
-            }, 3200);
+        function closeAddressModal() {
+            const modal = document.getElementById("address-modal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
         }
-
-        // ====================== CART mit Punkte-Vorschau ======================
-        function updateCartDisplay() {
-            const countEl = document.getElementById("cart-count-badge");
-            const totalEl = document.getElementById("cart-total-price");
-            const listEl = document.getElementById("cart-items-list");
-            const shippingNote = document.getElementById("cart-shipping-note");
-            const addressDisplay = document.getElementById("cart-address-display");
-            const loyaltyCartInfo = document.getElementById("loyalty-cart-info");
-
-            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-            countEl.textContent = totalItems;
-
-            const grandTotal = calculateCartTotal();
-            totalEl.textContent = `${grandTotal.toFixed(2).replace('.', ',')} €`;
-
-            const shipping = getShippingCost();
-            shippingNote.innerHTML = shipping === 0 ? `✅ Gratis Versand (ab 150 €)` : `+ ${shipping.toFixed(2).replace('.', ',')} € Versand`;
-
-            const pointsEarned = Math.floor(grandTotal);
-            loyaltyCartInfo.innerHTML = `🎁 Mit diesem Kauf erhältst du <span class="font-bold">+${pointsEarned}</span> Loyalty-Punkte!`;
-
-            if (userAddress.street) {
-                addressDisplay.innerHTML = `${userAddress.street}<br>${userAddress.zip} ${userAddress.city}`;
-            } else {
-                addressDisplay.innerHTML = `<span class="text-red-400">Noch keine Adresse angegeben</span>`;
-            }
-
-            if (cart.length === 0) {
-                listEl.innerHTML = `<p class="text-center py-16 text-gray-400">Dein Warenkorb ist leer</p>`;
-                loyaltyCartInfo.innerHTML = "";
-                return;
-            }
-            let itemsHTML = "";
-            const tornadoQty = getTornadoQuantity();
-            const free = Math.floor(tornadoQty / 4);
-            if (free > 0) {
-                itemsHTML += `<div class="bg-gradient-to-r from-amber-400 to-yellow-400 text-black p-6 rounded-3xl mb-6 text-center shadow-inner"><div class="flex items-center justify-center gap-3 text-2xl font-black">⚡ 4 FÜR 3 AKTION AKTIV!</div><p class="font-semibold text-base mt-2">Du bekommst <span class="underline">${free} Vape${free > 1 ? 's' : ''} gratis</span></p></div>`;
-            }
-            cart.forEach(item => {
-                const p = item.price || 8;
-                const nicDisplay = item.nicotine ? ` (${item.nicotine})` : '';
-                if (item.id === MYSTERY_ID) {
-                    itemsHTML += `<div class="mystery-item flex justify-between items-center rounded-3xl p-5"><div class="flex items-center gap-3"><i class="fa-solid fa-gift text-3xl"></i><div><div class="font-medium">${item.name}</div><div class="text-xs bg-white/30 px-3 py-0.5 rounded-full inline-block">GRATIS AB 100€</div></div></div><div class="text-right"><div class="font-bold text-xl text-emerald-900">0,00 €</div></div></div>`;
-                } else {
-                    itemsHTML += `<div class="flex justify-between items-center bg-zinc-900 border border-white/10 rounded-3xl p-5"><div><div class="font-medium">${item.name}${nicDisplay}</div><div class="text-xs text-gray-400">${item.qty} × ${p.toFixed(2).replace('.', ',')} €</div></div><div class="flex items-center gap-6"><div class="font-bold text-xl">${(item.qty * p).toFixed(2).replace('.', ',')} €</div><button onclick="removeCartItem(${item.id}); event.stopImmediatePropagation()" class="text-red-400"><i class="fa-solid fa-trash"></i></button></div></div>`;
-                }
-            });
-            listEl.innerHTML = itemsHTML;
-        }
-
-        // ====================== ALLE ANDEREN FUNKTIONEN ======================
-        function removeCartItem(id) {
-            if (id === MYSTERY_ID) return;
-            cart = cart.filter(item => item.id !== id);
-            manageMysteryVape();
-            updateCartDisplay();
-            renderProducts();
-        }
-        function clearCart() {
-            if (confirm("Wirklich ganzen Warenkorb leeren?")) {
-                cart = [];
-                appliedDiscountCode = null;
-                discountPercent = 0;
-                document.getElementById("discount-status").innerHTML = "";
-                updateCartDisplay();
-                renderProducts();
-                toggleCart();
-            }
-        }
-        function toggleCart() {
-            document.getElementById("cart-sidebar").classList.toggle("translate-x-full");
-        }
-
-        function generateOrderNumber() {
-            const now = new Date();
-            const dateStr = now.getFullYear().toString().slice(2) + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0');
-            return `WV-${dateStr}-${Math.floor(1000 + Math.random() * 9000)}`;
-        }
-        async function placeOrder() {
-            if (!currentUserName) { alert("Bitte zuerst deinen Namen eingeben!"); showNameModal(); return; }
-            if (cart.length === 0) return alert("Dein Warenkorb ist leer.");
-            if (!userAddress.street) {
-                alert("Bitte zuerst deine Lieferadresse eingeben!");
-                showAddressModal();
-                return;
-            }
-            const orderNumber = generateOrderNumber();
-            const finalTotal = calculateCartTotal();
-            const shipping = getShippingCost();
-
-            let orderText = `Name: ${currentUserName}\nBestellnummer: ${orderNumber}\nGesamt: ${finalTotal.toFixed(2).replace('.', ',')} €\n`;
-            orderText += `Lieferadresse:\n${userAddress.street}\n${userAddress.zip} ${userAddress.city}\n\n`;
-            orderText += shipping === 0 ? `Versand: Kostenlos (ab 150 €)\n` : `Versandkosten: ${shipping.toFixed(2).replace('.', ',')} €\n\nBestellte Produkte:\n`;
-
-            cart.forEach(item => {
-                const p = item.price || 0;
-                const nic = item.nicotine ? ` (${item.nicotine})` : '';
-                orderText += `• ${item.name}${nic} × ${item.qty} = ${(item.qty * p).toFixed(2).replace('.', ',')} €\n`;
-            });
-            if (discountPercent > 0) orderText += `• Rabattcode ${appliedDiscountCode} (${discountPercent}%) angewendet\n`;
-
-            saveToHistory(orderNumber, finalTotal, orderText);
-
-            addLoyaltyPoints(finalTotal);
-
-            const formData = new FormData();
-            formData.append("name", currentUserName);
-            formData.append("bestellnummer", orderNumber);
-            formData.append("adresse", `${userAddress.street}, ${userAddress.zip} ${userAddress.city}`);
-            formData.append("produkte", orderText);
-            formData.append("gesamt", `${finalTotal.toFixed(2).replace('.', ',')} €`);
-            formData.append("_subject", `WaveVapes Bestellung ${orderNumber} – ${userAddress.city}`);
-
-            try {
-                const response = await fetch(FORMSPREE_ENDPOINT, { method: "POST", body: formData, headers: { "Accept": "application/json" } });
-                if (response.ok) {
-                    showSuccessModal(orderNumber, orderText, finalTotal);
-                    cart = [];
-                    appliedDiscountCode = null;
-                    discountPercent = 0;
-                    document.getElementById("discount-status").innerHTML = "";
-                    updateCartDisplay();
-                    renderProducts();
-                    toggleCart();
-                    checkAndAutoRedeemLoyalty();
-                } else alert("Fehler beim Senden.");
-            } catch (e) { alert("Verbindungsfehler."); }
-        }
-        function showSuccessModal(orderNumber, details, total) {
-            document.getElementById("success-order-id").textContent = orderNumber;
-            document.getElementById("success-loyalty-info").innerHTML = `
-                <span class="text-emerald-400 font-medium">+${Math.floor(total)} Punkte erhalten!</span><br>
-                Du hast jetzt <span class="font-bold">${loyaltyPoints}</span> Loyalty-Punkte
-            `;
-
-            const infoHTML = `
-                <div class="space-y-3">
-                    <div><strong>Bank:</strong> ${BANK_NAME}</div>
-                    <div><strong>Empfänger:</strong> ${BANK_OWNER}</div>
-                    <div><strong>IBAN:</strong> <span class="font-mono break-all">${BANK_IBAN}</span></div>
-                    ${BANK_BIC ? `<div><strong>BIC:</strong> ${BANK_BIC}</div>` : ''}
-                    <div><strong>Betrag:</strong> <span class="font-bold text-xl">${total.toFixed(2).replace('.', ',')} €</span></div>
-                    <div class="pt-4 border-t border-white/20">
-                        <div class="text-amber-300 text-xs tracking-wider">VERWENDUNGSZWECK</div>
-                        <div class="font-mono bg-zinc-900 p-3 rounded-xl text-center text-base mt-1">${orderNumber}</div>
-                    </div>
-                </div>
-            `;
-            document.getElementById("bank-payment-info").innerHTML = infoHTML;
-            const detailsDiv = document.getElementById("success-details");
-            detailsDiv.innerHTML = `<div class="font-mono text-xs leading-relaxed bg-black p-5 rounded-2xl">${details.replace(/\n/g, '<br>')}</div>`;
-            document.getElementById("success-modal").classList.remove("hidden");
-            document.getElementById("success-modal").classList.add("flex");
-        }
-        function closeSuccessModal() {
-            document.getElementById("success-modal").classList.add("hidden");
-            document.getElementById("success-modal").classList.remove("flex");
-        }
-        function filterProducts() {
-            renderProducts();
-        }
-
-        // ====================== ALLE ANDEREN FUNKTIONEN (unverändert) ======================
-        function manageMysteryVape() {
-            const subtotal = getSubtotal();
-            const hasMystery = cart.some(item => item.id === MYSTERY_ID);
-            if (subtotal >= 100 && !hasMystery) {
-                cart.push({ id: MYSTERY_ID, name: "Mystery Vape", qty: 1, price: 0 });
-                showMysteryToast();
-            } else if (subtotal < 100 && hasMystery) {
-                cart = cart.filter(item => item.id !== MYSTERY_ID);
-            }
-        }
-        function showMysteryToast() {
-            const toast = document.getElementById('notification-toast');
-            notificationCyclePaused = true;
-            toast.classList.add('mystery');
-            toast.innerHTML = `🎉 <strong>Mystery Vape gratis hinzugefügt!</strong>`;
-            toast.classList.add('visible');
-            setTimeout(() => {
-                toast.classList.remove('visible');
-                setTimeout(() => {
-                    toast.classList.remove('mystery');
-                    notificationCyclePaused = false;
-                    showNextNotification();
-                }, 600);
-            }, 4800);
-        }
-        function generateNotificationList() {
-            notificationList = [];
-            const availableProducts = allProducts.filter(p => p.available);
-            for (let i = 0; i < 10; i++) {
-                const randomName = fakeNames[Math.floor(Math.random() * fakeNames.length)];
-                const randomProduct = availableProducts[Math.floor(Math.random() * availableProducts.length)].name;
-                const randomMinutes = Math.floor(Math.random() * 59) + 1;
-                const minuteText = randomMinutes === 1 ? "Minute" : "Minuten";
-                notificationList.push(`${randomName} bestellte vor ${randomMinutes} ${minuteText} ${randomProduct}.`);
-            }
-            localStorage.setItem('wavevapes_notifications', JSON.stringify(notificationList));
-            localStorage.setItem('wavevapes_last_generate', Date.now());
-        }
-        function checkAndGenerateNotifications() {
-            const lastGenerate = localStorage.getItem('wavevapes_last_generate');
-            if (!lastGenerate || (Date.now() - lastGenerate > HOUR_MS)) generateNotificationList();
-            else {
-                const stored = localStorage.getItem('wavevapes_notifications');
-                if (stored) notificationList = JSON.parse(stored);
-                else generateNotificationList();
-            }
-        }
-        function showNextNotification() {
-            if (notificationCyclePaused) return;
-            const toast = document.getElementById('notification-toast');
-            toast.textContent = notificationList[currentNotificationIndex];
-            toast.classList.add('visible');
-            setTimeout(() => toast.classList.remove('visible'), NOTIFICATION_DURATION - 700);
-            currentNotificationIndex = (currentNotificationIndex + 1) % notificationList.length;
-        }
-        function startNotificationCycle() {
-            checkAndGenerateNotifications();
-            showNextNotification();
-            setInterval(showNextNotification, NOTIFICATION_DURATION);
-            setInterval(checkAndGenerateNotifications, 60000);
-        }
-        function renderCategoryTabs() {
-            const tabsHTML = `
-                <button onclick="setCategoryFilter('Alle')" class="px-5 py-2 transition ${currentCategoryFilter === 'Alle' ? 'tab-active' : ''}">Alle</button>
-                <button onclick="setCategoryFilter('WaveVapes Tornado 30000')" class="px-5 py-2 transition flex items-center gap-x-3 ${currentCategoryFilter === 'WaveVapes Tornado 30000' ? 'tab-active' : ''}">
-                    Tornado 30000
-                    <span class="bg-amber-400 text-black text-xs font-black px-4 py-1 rounded-2xl tracking-wider">4 FÜR 3</span>
-                    <i class="fa-solid fa-bolt animate-bolt text-2xl"></i>
-                </button>
-                <button onclick="setCategoryFilter('Normale Sorten')" class="px-5 py-2 transition ${currentCategoryFilter === 'Normale Sorten' ? 'tab-active' : ''}">Normale Sorten</button>
-                <button onclick="setCategoryFilter('Neue Sorten')" class="px-5 py-2 transition ${currentCategoryFilter === 'Neue Sorten' ? 'tab-active' : ''}">Neue Sorten</button>
-            `;
-            document.getElementById("category-tabs").innerHTML = tabsHTML;
-        }
-        function setCategoryFilter(cat) {
-            currentCategoryFilter = cat;
-            renderCategoryTabs();
-            renderProducts();
-        }
-        function getTornadoQuantity() {
-            return cart.reduce((sum, item) => {
-                const prod = allProducts.find(p => p.id === item.id);
-                return (prod && prod.category === "WaveVapes Tornado 30000") ? sum + item.qty : sum;
-            }, 0);
-        }
-        function showDealToast() {
-            const toast = document.getElementById('notification-toast');
-            notificationCyclePaused = true;
-            toast.classList.add('deal');
-            toast.innerHTML = `⚡ <strong>4 FÜR 3 AKTION EINGELÖST!</strong>`;
-            toast.classList.add('visible');
-            setTimeout(() => {
-                toast.classList.remove('visible');
-                setTimeout(() => {
-                    toast.classList.remove('deal');
-                    notificationCyclePaused = false;
-                    showNextNotification();
-                }, 800);
-            }, 5000);
-        }
-        function renderProducts() {
-            const container = document.getElementById("products-grid");
-            let html = "";
-            const searchTerm = document.getElementById("search-input").value.toLowerCase();
-            const filtered = allProducts.filter(product => {
-                const matchesCategory = currentCategoryFilter === "Alle" || product.category === currentCategoryFilter;
-                const matchesSearch = !searchTerm || product.name.toLowerCase().includes(searchTerm);
-                return matchesCategory && matchesSearch;
-            });
-            filtered.forEach(product => {
-                const cartItem = cart.find(item => item.id === product.id);
-                const qty = cartItem ? cartItem.qty : 0;
-                const nicotine = cartItem && cartItem.nicotine ? cartItem.nicotine : "20 mg";
-                const imageHTML = product.image ? `<img src="${product.image}" class="tornado-image" alt="${product.name}">` : '';
-                let priceHTML = product.category === "WaveVapes Tornado 30000" 
-                    ? `<div class="price-row"><div class="flex items-baseline gap-0.5"><span class="discount-price">35,99</span><span class="euro">€</span></div><div class="flex items-baseline gap-0.5"><span class="sale-price">20,00</span><span class="euro">€</span></div></div>`
-                    : `<div class="price-row"><div class="flex items-baseline gap-0.5"><span class="discount-price">9,99</span><span class="euro">€</span></div><div class="flex items-baseline gap-0.5"><span class="sale-price">8,00</span><span class="euro">€</span></div></div>`;
-                let nicotineHTML = '';
-                if (product.category !== "WaveVapes Tornado 30000" && product.available) {
-                    nicotineHTML = `<select class="nicotine-select" onchange="updateNicotine(${product.id}, this.value)">${NICOTINE_OPTIONS.map(opt => `<option value="${opt}" ${nicotine === opt ? 'selected' : ''}>${opt}</option>`).join('')}</select>`;
-                }
-                html += `
-                    <div class="product-card bg-zinc-900 border ${product.available ? 'border-white/10' : 'border-red-500/40'} rounded-3xl overflow-hidden">
-                        <div class="h-1.5 bg-gradient-to-r from-cyan-400 to-purple-500"></div>
-                        <div class="p-5">
-                            ${imageHTML}
-                            <div class="flex justify-between mb-3">
-                                <h4 class="font-semibold text-lg leading-tight">${product.name}</h4>
-                                ${product.isNew ? `<span class="px-3 py-1 bg-lime-400 text-black text-xs font-bold rounded-2xl">NEW</span>` : ''}
-                            </div>
-                            ${!product.available ? `<div class="bg-red-900/30 text-red-400 text-xs px-4 py-2 rounded-2xl mb-4 flex items-center gap-2"><i class="fa-solid fa-circle-exclamation"></i><span>Aktuell NICHT verfügbar</span></div>` : ''}
-                            <div class="flex flex-col items-center">
-                                ${priceHTML}
-                                ${nicotineHTML}
-                                ${product.available ? `
-                                <div class="flex items-center bg-zinc-800 rounded-3xl mt-4">
-                                    <button onclick="changeQuantity(${product.id}, -1)" class="qty-btn w-9 h-9 text-2xl text-cyan-300">-</button>
-                                    <div class="w-10 text-center font-bold text-xl">${qty}</div>
-                                    <button onclick="changeQuantity(${product.id}, 1)" class="qty-btn w-9 h-9 text-2xl text-cyan-300">+</button>
-                                </div>` : ''}
-                            </div>
-                        </div>
-                    </div>`;
-            });
-            container.innerHTML = html || `<p class="col-span-full text-center py-16 text-gray-400">Keine Produkte gefunden.</p>`;
-        }
-        function updateNicotine(id, value) {
-            let item = cart.find(i => i.id === id);
-            if (item) item.nicotine = value;
+        function saveAddress() {
+            const street = document.getElementById("addr-street").value.trim();
+            const zip = document.getElementById("addr-zip").value.trim();
+            const city = document.getElementById("addr-city").value.trim();
+            if (!street || !zip || !city) return alert("Bitte alle Felder ausfüllen!");
+            userAddress = { street, zip, city };
+            localStorage.setItem("wavevapes_address", JSON.stringify(userAddress));
+            closeAddressModal();
             updateCartDisplay();
         }
-        function changeQuantity(id, delta) {
-            const product = allProducts.find(p => p.id === id);
-            if (!product || !product.available) return;
-            let existing = cart.find(item => item.id === id);
-            if (!existing) {
-                existing = { id, name: product.name, qty: 0, price: product.price, nicotine: "20 mg" };
-                cart.push(existing);
-            }
-            existing.qty = Math.max(0, existing.qty + delta);
-            if (existing.qty === 0) cart = cart.filter(item => item.id !== id);
-            manageMysteryVape();
-            const newTornadoQty = getTornadoQuantity();
-            if (newTornadoQty >= 4 && newTornadoQty % 4 === 0) showDealToast();
-            updateCartDisplay();
-            renderProducts();
-        }
+
+        // ====================== VERSAND ======================
         function getSubtotal() {
             return cart.reduce((sum, item) => item.id === MYSTERY_ID ? sum : sum + item.qty * (item.price || 8), 0);
         }
@@ -825,61 +483,8 @@
         function calculateCartTotal() {
             return getProductTotal() + getShippingCost();
         }
-        function loadOrderHistory() {
-            const saved = localStorage.getItem("wavevapes_orderhistory");
-            if (saved) orderHistory = JSON.parse(saved);
-        }
-        function saveToHistory(orderNumber, totalPrice, orderText) {
-            const order = {
-                id: orderNumber,
-                date: new Date().toLocaleString('de-DE'),
-                total: totalPrice.toFixed(2).replace('.', ',') + " €",
-                summary: orderText.split('\n').slice(3, 6).join(' • ')
-            };
-            orderHistory.unshift(order);
-            if (orderHistory.length > 15) orderHistory.pop();
-            localStorage.setItem("wavevapes_orderhistory", JSON.stringify(orderHistory));
-        }
-        function showOrderHistory() {
-            if (!currentUserName) {
-                alert("Bitte zuerst deinen Namen eingeben!");
-                showNameModal();
-                return;
-            }
-            renderHistoryModal();
-            const modal = document.getElementById("history-modal");
-            modal.classList.remove("hidden");
-            modal.classList.add("flex");
-        }
-        function renderHistoryModal() {
-            const container = document.getElementById("history-list");
-            const noEl = document.getElementById("no-history");
-            container.innerHTML = "";
-            if (orderHistory.length === 0) {
-                noEl.classList.remove("hidden");
-                return;
-            }
-            noEl.classList.add("hidden");
-            orderHistory.forEach(order => {
-                const div = document.createElement("div");
-                div.className = "history-item rounded-3xl p-6";
-                div.innerHTML = `
-                    <div class="flex justify-between mb-3">
-                        <div class="font-mono text-cyan-300">${order.id}</div>
-                        <div class="text-sm text-gray-400">${order.date}</div>
-                    </div>
-                    <div class="font-bold text-xl mb-2">${order.total}</div>
-                    <div class="text-sm text-gray-300 line-clamp-2 mb-4">${order.summary}</div>
-                    <button onclick="showPaymentInfo('${order.id}')" class="w-full bg-cyan-400 hover:bg-cyan-300 text-black py-3 rounded-2xl text-sm font-medium transition-all">Überweisungsdaten anzeigen</button>
-                `;
-                container.appendChild(div);
-            });
-        }
-        function closeHistoryModal() {
-            const modal = document.getElementById("history-modal");
-            modal.classList.add("hidden");
-            modal.classList.remove("flex");
-        }
+
+        // ====================== BANKDATEN-MODAL ======================
         function showPaymentInfo(orderNumber) {
             const infoHTML = `
                 <div class="space-y-4 text-sm">
@@ -905,31 +510,65 @@
             modal.classList.add("hidden");
             modal.classList.remove("flex");
         }
-        function showNameModal() {
-            document.getElementById("name-modal").classList.remove("hidden");
-            document.getElementById("name-modal").classList.add("flex");
-            setTimeout(() => document.getElementById("name-input-field").focus(), 300);
+
+        // ====================== HISTORY ======================
+        function loadOrderHistory() {
+            const saved = localStorage.getItem("wavevapes_orderhistory");
+            if (saved) orderHistory = JSON.parse(saved);
         }
-        function saveUserName() {
-            const input = document.getElementById("name-input-field").value.trim();
-            if (input.length < 3) return alert("Bitte gib deinen richtigen Namen ein (mind. 3 Zeichen)");
-            currentUserName = input;
-            localStorage.setItem("wavevapes_username", currentUserName);
-            document.getElementById("name-modal").classList.add("hidden");
-            document.getElementById("name-modal").classList.remove("flex");
-            updateUserDisplay();
+        function saveToHistory(orderNumber, totalPrice, orderText) {
+            const order = {
+                id: orderNumber,
+                date: new Date().toLocaleString('de-DE'),
+                total: totalPrice.toFixed(2).replace('.', ',') + " €",
+                summary: orderText.split('\n').slice(3, 6).join(' • ')
+            };
+            orderHistory.unshift(order);
+            if (orderHistory.length > 15) orderHistory.pop();
+            localStorage.setItem("wavevapes_orderhistory", JSON.stringify(orderHistory));
         }
-        function updateUserDisplay() {
-            const displayEl = document.getElementById("user-name-display");
-            const navEl = document.getElementById("current-user-name");
-            if (currentUserName) {
-                displayEl.textContent = currentUserName;
-                navEl.textContent = currentUserName.split(" ")[0];
-            } else {
-                displayEl.textContent = "Bitte Namen eingeben";
-                navEl.textContent = "Name";
+        function renderHistoryModal() {
+            const container = document.getElementById("history-list");
+            const noEl = document.getElementById("no-history");
+            container.innerHTML = "";
+            if (orderHistory.length === 0) {
+                noEl.classList.remove("hidden");
+                return;
             }
+            noEl.classList.add("hidden");
+            orderHistory.forEach(order => {
+                const div = document.createElement("div");
+                div.className = "history-item rounded-3xl p-6";
+                div.innerHTML = `
+                    <div class="flex justify-between mb-3">
+                        <div class="font-mono text-cyan-300">${order.id}</div>
+                        <div class="text-sm text-gray-400">${order.date}</div>
+                    </div>
+                    <div class="font-bold text-xl mb-2">${order.total}</div>
+                    <div class="text-sm text-gray-300 line-clamp-2 mb-4">${order.summary}</div>
+                    <button onclick="showPaymentInfo('${order.id}')" class="w-full bg-cyan-400 hover:bg-cyan-300 text-black py-3 rounded-2xl text-sm font-medium transition-all">Überweisungsdaten anzeigen</button>
+                `;
+                container.appendChild(div);
+            });
         }
+        function showOrderHistory() {
+            if (!currentUserName) {
+                alert("Bitte zuerst deinen Namen eingeben!");
+                showNameModal();
+                return;
+            }
+            renderHistoryModal();
+            const modal = document.getElementById("history-modal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        }
+        function closeHistoryModal() {
+            const modal = document.getElementById("history-modal");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+
+        // ====================== REFERRAL ======================
         function showReferralConsentModal() {
             const modal = document.getElementById("referral-consent-modal");
             modal.classList.remove("hidden");
@@ -1078,6 +717,414 @@
             const modal = document.getElementById("referrals-modal");
             modal.classList.add("hidden");
             modal.classList.remove("flex");
+        }
+        async function applyDiscountCode() {
+            const input = document.getElementById("discount-input").value.trim().toUpperCase();
+            const statusEl = document.getElementById("discount-status");
+            if (!input) return statusEl.innerHTML = `<span class="text-red-400">Bitte Code eingeben</span>`;
+            if (VALID_DISCOUNTS[input]) {
+                discountPercent = VALID_DISCOUNTS[input];
+                appliedDiscountCode = input;
+                statusEl.innerHTML = `<span class="text-emerald-400">✓ ${input} angewendet (${discountPercent}% Rabatt)</span>`;
+                updateCartDisplay();
+                showDiscountToast();
+                return;
+            }
+            statusEl.innerHTML = `<span class="text-red-400">Ungültiger Code</span>`;
+        }
+        function showDiscountToast() {
+            const toast = document.getElementById('notification-toast');
+            notificationCyclePaused = true;
+            toast.classList.add('discount');
+            toast.innerHTML = `🎟️ <strong>${appliedDiscountCode} aktiviert!</strong>`;
+            toast.classList.add('visible');
+            setTimeout(() => {
+                toast.classList.remove('visible');
+                setTimeout(() => {
+                    toast.classList.remove('discount');
+                    notificationCyclePaused = false;
+                    showNextNotification();
+                }, 600);
+            }, 3200);
+        }
+
+        // ====================== NOTIFICATIONS & MYSTERY ======================
+        function manageMysteryVape() {
+            const subtotal = getSubtotal();
+            const hasMystery = cart.some(item => item.id === MYSTERY_ID);
+            if (subtotal >= 100 && !hasMystery) {
+                cart.push({ id: MYSTERY_ID, name: "Mystery Vape", qty: 1, price: 0 });
+                showMysteryToast();
+            } else if (subtotal < 100 && hasMystery) {
+                cart = cart.filter(item => item.id !== MYSTERY_ID);
+            }
+        }
+        function showMysteryToast() {
+            const toast = document.getElementById('notification-toast');
+            notificationCyclePaused = true;
+            toast.classList.add('mystery');
+            toast.innerHTML = `🎉 <strong>Mystery Vape gratis hinzugefügt!</strong>`;
+            toast.classList.add('visible');
+            setTimeout(() => {
+                toast.classList.remove('visible');
+                setTimeout(() => {
+                    toast.classList.remove('mystery');
+                    notificationCyclePaused = false;
+                    showNextNotification();
+                }, 600);
+            }, 4800);
+        }
+        function generateNotificationList() {
+            notificationList = [];
+            const availableProducts = allProducts.filter(p => p.available);
+            for (let i = 0; i < 10; i++) {
+                const randomName = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+                const randomProduct = availableProducts[Math.floor(Math.random() * availableProducts.length)].name;
+                const randomMinutes = Math.floor(Math.random() * 59) + 1;
+                const minuteText = randomMinutes === 1 ? "Minute" : "Minuten";
+                notificationList.push(`${randomName} bestellte vor ${randomMinutes} ${minuteText} ${randomProduct}.`);
+            }
+            localStorage.setItem('wavevapes_notifications', JSON.stringify(notificationList));
+            localStorage.setItem('wavevapes_last_generate', Date.now());
+        }
+        function checkAndGenerateNotifications() {
+            const lastGenerate = localStorage.getItem('wavevapes_last_generate');
+            if (!lastGenerate || (Date.now() - lastGenerate > HOUR_MS)) generateNotificationList();
+            else {
+                const stored = localStorage.getItem('wavevapes_notifications');
+                if (stored) notificationList = JSON.parse(stored);
+                else generateNotificationList();
+            }
+        }
+        function showNextNotification() {
+            if (notificationCyclePaused) return;
+            const toast = document.getElementById('notification-toast');
+            toast.textContent = notificationList[currentNotificationIndex];
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), NOTIFICATION_DURATION - 700);
+            currentNotificationIndex = (currentNotificationIndex + 1) % notificationList.length;
+        }
+        function startNotificationCycle() {
+            checkAndGenerateNotifications();
+            showNextNotification();
+            setInterval(showNextNotification, NOTIFICATION_DURATION);
+            setInterval(checkAndGenerateNotifications, 60000);
+        }
+
+        // ====================== INITIALIZE ======================
+        function initialize() {
+            localStorage.removeItem('wavevapes_notifications');
+            localStorage.removeItem('wavevapes_last_generate');
+            loadOrderHistory();
+            updateUserDisplay();
+            updateLoyaltyDisplay();
+            renderCategoryTabs();
+            renderProducts();
+            updateCartDisplay();
+            startNotificationCycle();
+            checkReferralCode();
+            checkAndAutoRedeemLoyalty();
+        }
+
+        // ====================== USER NAME ======================
+        function showNameModal() {
+            document.getElementById("name-modal").classList.remove("hidden");
+            document.getElementById("name-modal").classList.add("flex");
+            setTimeout(() => document.getElementById("name-input-field").focus(), 300);
+        }
+        function saveUserName() {
+            const input = document.getElementById("name-input-field").value.trim();
+            if (input.length < 3) return alert("Bitte gib deinen richtigen Namen ein (mind. 3 Zeichen)");
+            currentUserName = input;
+            localStorage.setItem("wavevapes_username", currentUserName);
+            document.getElementById("name-modal").classList.add("hidden");
+            document.getElementById("name-modal").classList.remove("flex");
+            updateUserDisplay();
+        }
+        function updateUserDisplay() {
+            const displayEl = document.getElementById("user-name-display");
+            const navEl = document.getElementById("current-user-name");
+            if (currentUserName) {
+                displayEl.textContent = currentUserName;
+                navEl.textContent = currentUserName.split(" ")[0];
+            } else {
+                displayEl.textContent = "Bitte Namen eingeben";
+                navEl.textContent = "Name";
+            }
+        }
+
+        // ====================== CATEGORY TABS ======================
+        function renderCategoryTabs() {
+            const tabsHTML = `
+                <button onclick="setCategoryFilter('Alle')" class="px-5 py-2 transition ${currentCategoryFilter === 'Alle' ? 'tab-active' : ''}">Alle</button>
+                <button onclick="setCategoryFilter('WaveVapes Tornado 30000')" class="px-5 py-2 transition flex items-center gap-x-3 ${currentCategoryFilter === 'WaveVapes Tornado 30000' ? 'tab-active' : ''}">
+                    Tornado 30000
+                    <span class="bg-amber-400 text-black text-xs font-black px-4 py-1 rounded-2xl tracking-wider">4 FÜR 3</span>
+                    <i class="fa-solid fa-bolt animate-bolt text-2xl"></i>
+                </button>
+                <button onclick="setCategoryFilter('Normale Sorten')" class="px-5 py-2 transition ${currentCategoryFilter === 'Normale Sorten' ? 'tab-active' : ''}">Normale Sorten</button>
+                <button onclick="setCategoryFilter('Neue Sorten')" class="px-5 py-2 transition ${currentCategoryFilter === 'Neue Sorten' ? 'tab-active' : ''}">Neue Sorten</button>
+            `;
+            document.getElementById("category-tabs").innerHTML = tabsHTML;
+        }
+        function setCategoryFilter(cat) {
+            currentCategoryFilter = cat;
+            renderCategoryTabs();
+            renderProducts();
+        }
+
+        // ====================== TORNADO ======================
+        function getTornadoQuantity() {
+            return cart.reduce((sum, item) => {
+                const prod = allProducts.find(p => p.id === item.id);
+                return (prod && prod.category === "WaveVapes Tornado 30000") ? sum + item.qty : sum;
+            }, 0);
+        }
+        function showDealToast() {
+            const toast = document.getElementById('notification-toast');
+            notificationCyclePaused = true;
+            toast.classList.add('deal');
+            toast.innerHTML = `⚡ <strong>4 FÜR 3 AKTION EINGELÖST!</strong>`;
+            toast.classList.add('visible');
+            setTimeout(() => {
+                toast.classList.remove('visible');
+                setTimeout(() => {
+                    toast.classList.remove('deal');
+                    notificationCyclePaused = false;
+                    showNextNotification();
+                }, 800);
+            }, 5000);
+        }
+
+        // ====================== PRODUCTS ======================
+        function renderProducts() {
+            const container = document.getElementById("products-grid");
+            let html = "";
+            const searchTerm = document.getElementById("search-input").value.toLowerCase();
+            const filtered = allProducts.filter(product => {
+                const matchesCategory = currentCategoryFilter === "Alle" || product.category === currentCategoryFilter;
+                const matchesSearch = !searchTerm || product.name.toLowerCase().includes(searchTerm);
+                return matchesCategory && matchesSearch;
+            });
+            filtered.forEach(product => {
+                const cartItem = cart.find(item => item.id === product.id);
+                const qty = cartItem ? cartItem.qty : 0;
+                const nicotine = cartItem && cartItem.nicotine ? cartItem.nicotine : "20 mg";
+                const imageHTML = product.image ? `<img src="${product.image}" class="tornado-image" alt="${product.name}">` : '';
+                let priceHTML = product.category === "WaveVapes Tornado 30000" 
+                    ? `<div class="price-row"><div class="flex items-baseline gap-0.5"><span class="discount-price">35,99</span><span class="euro">€</span></div><div class="flex items-baseline gap-0.5"><span class="sale-price">20,00</span><span class="euro">€</span></div></div>`
+                    : `<div class="price-row"><div class="flex items-baseline gap-0.5"><span class="discount-price">9,99</span><span class="euro">€</span></div><div class="flex items-baseline gap-0.5"><span class="sale-price">8,00</span><span class="euro">€</span></div></div>`;
+                let nicotineHTML = '';
+                if (product.category !== "WaveVapes Tornado 30000" && product.available) {
+                    nicotineHTML = `<select class="nicotine-select" onchange="updateNicotine(${product.id}, this.value)">${NICOTINE_OPTIONS.map(opt => `<option value="${opt}" ${nicotine === opt ? 'selected' : ''}>${opt}</option>`).join('')}</select>`;
+                }
+                html += `
+                    <div class="product-card bg-zinc-900 border ${product.available ? 'border-white/10' : 'border-red-500/40'} rounded-3xl overflow-hidden">
+                        <div class="h-1.5 bg-gradient-to-r from-cyan-400 to-purple-500"></div>
+                        <div class="p-5">
+                            ${imageHTML}
+                            <div class="flex justify-between mb-3">
+                                <h4 class="font-semibold text-lg leading-tight">${product.name}</h4>
+                                ${product.isNew ? `<span class="px-3 py-1 bg-lime-400 text-black text-xs font-bold rounded-2xl">NEW</span>` : ''}
+                            </div>
+                            ${!product.available ? `<div class="bg-red-900/30 text-red-400 text-xs px-4 py-2 rounded-2xl mb-4 flex items-center gap-2"><i class="fa-solid fa-circle-exclamation"></i><span>Aktuell NICHT verfügbar</span></div>` : ''}
+                            <div class="flex flex-col items-center">
+                                ${priceHTML}
+                                ${nicotineHTML}
+                                ${product.available ? `
+                                <div class="flex items-center bg-zinc-800 rounded-3xl mt-4">
+                                    <button onclick="changeQuantity(${product.id}, -1)" class="qty-btn w-9 h-9 text-2xl text-cyan-300">-</button>
+                                    <div class="w-10 text-center font-bold text-xl">${qty}</div>
+                                    <button onclick="changeQuantity(${product.id}, 1)" class="qty-btn w-9 h-9 text-2xl text-cyan-300">+</button>
+                                </div>` : ''}
+                            </div>
+                        </div>
+                    </div>`;
+            });
+            container.innerHTML = html || `<p class="col-span-full text-center py-16 text-gray-400">Keine Produkte gefunden.</p>`;
+        }
+        function updateNicotine(id, value) {
+            let item = cart.find(i => i.id === id);
+            if (item) item.nicotine = value;
+            updateCartDisplay();
+        }
+        function changeQuantity(id, delta) {
+            const product = allProducts.find(p => p.id === id);
+            if (!product || !product.available) return;
+            let existing = cart.find(item => item.id === id);
+            if (!existing) {
+                existing = { id, name: product.name, qty: 0, price: product.price, nicotine: "20 mg" };
+                cart.push(existing);
+            }
+            existing.qty = Math.max(0, existing.qty + delta);
+            if (existing.qty === 0) cart = cart.filter(item => item.id !== id);
+            manageMysteryVape();
+            const newTornadoQty = getTornadoQuantity();
+            if (newTornadoQty >= 4 && newTornadoQty % 4 === 0) showDealToast();
+            updateCartDisplay();
+            renderProducts();
+        }
+
+        // ====================== CART mit Punkte-Vorschau ======================
+        function updateCartDisplay() {
+            const countEl = document.getElementById("cart-count-badge");
+            const totalEl = document.getElementById("cart-total-price");
+            const listEl = document.getElementById("cart-items-list");
+            const shippingNote = document.getElementById("cart-shipping-note");
+            const addressDisplay = document.getElementById("cart-address-display");
+            const loyaltyCartInfo = document.getElementById("loyalty-cart-info");
+
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            countEl.textContent = totalItems;
+
+            const grandTotal = calculateCartTotal();
+            totalEl.textContent = `${grandTotal.toFixed(2).replace('.', ',')} €`;
+
+            const shipping = getShippingCost();
+            shippingNote.innerHTML = shipping === 0 ? `✅ Gratis Versand (ab 150 €)` : `+ ${shipping.toFixed(2).replace('.', ',')} € Versand`;
+
+            // NEU: Punkte-Vorschau
+            const pointsEarned = Math.floor(grandTotal);
+            loyaltyCartInfo.innerHTML = `🎁 Mit diesem Kauf erhältst du <span class="font-bold">+${pointsEarned}</span> Loyalty-Punkte!`;
+
+            if (userAddress.street) {
+                addressDisplay.innerHTML = `${userAddress.street}<br>${userAddress.zip} ${userAddress.city}`;
+            } else {
+                addressDisplay.innerHTML = `<span class="text-red-400">Noch keine Adresse angegeben</span>`;
+            }
+
+            if (cart.length === 0) {
+                listEl.innerHTML = `<p class="text-center py-16 text-gray-400">Dein Warenkorb ist leer</p>`;
+                loyaltyCartInfo.innerHTML = "";
+                return;
+            }
+            let itemsHTML = "";
+            const tornadoQty = getTornadoQuantity();
+            const free = Math.floor(tornadoQty / 4);
+            if (free > 0) {
+                itemsHTML += `<div class="bg-gradient-to-r from-amber-400 to-yellow-400 text-black p-6 rounded-3xl mb-6 text-center shadow-inner"><div class="flex items-center justify-center gap-3 text-2xl font-black">⚡ 4 FÜR 3 AKTION AKTIV!</div><p class="font-semibold text-base mt-2">Du bekommst <span class="underline">${free} Vape${free > 1 ? 's' : ''} gratis</span></p></div>`;
+            }
+            cart.forEach(item => {
+                const p = item.price || 8;
+                const nicDisplay = item.nicotine ? ` (${item.nicotine})` : '';
+                if (item.id === MYSTERY_ID) {
+                    itemsHTML += `<div class="mystery-item flex justify-between items-center rounded-3xl p-5"><div class="flex items-center gap-3"><i class="fa-solid fa-gift text-3xl"></i><div><div class="font-medium">${item.name}</div><div class="text-xs bg-white/30 px-3 py-0.5 rounded-full inline-block">GRATIS AB 100€</div></div></div><div class="text-right"><div class="font-bold text-xl text-emerald-900">0,00 €</div></div></div>`;
+                } else {
+                    itemsHTML += `<div class="flex justify-between items-center bg-zinc-900 border border-white/10 rounded-3xl p-5"><div><div class="font-medium">${item.name}${nicDisplay}</div><div class="text-xs text-gray-400">${item.qty} × ${p.toFixed(2).replace('.', ',')} €</div></div><div class="flex items-center gap-6"><div class="font-bold text-xl">${(item.qty * p).toFixed(2).replace('.', ',')} €</div><button onclick="removeCartItem(${item.id}); event.stopImmediatePropagation()" class="text-red-400"><i class="fa-solid fa-trash"></i></button></div></div>`;
+                }
+            });
+            listEl.innerHTML = itemsHTML;
+        }
+        function removeCartItem(id) {
+            if (id === MYSTERY_ID) return;
+            cart = cart.filter(item => item.id !== id);
+            manageMysteryVape();
+            updateCartDisplay();
+            renderProducts();
+        }
+        function clearCart() {
+            if (confirm("Wirklich ganzen Warenkorb leeren?")) {
+                cart = [];
+                appliedDiscountCode = null;
+                discountPercent = 0;
+                document.getElementById("discount-status").innerHTML = "";
+                updateCartDisplay();
+                renderProducts();
+                toggleCart();
+            }
+        }
+        function toggleCart() {
+            document.getElementById("cart-sidebar").classList.toggle("translate-x-full");
+        }
+
+        // ====================== ORDER ======================
+        function generateOrderNumber() {
+            const now = new Date();
+            const dateStr = now.getFullYear().toString().slice(2) + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0');
+            return `WV-${dateStr}-${Math.floor(1000 + Math.random() * 9000)}`;
+        }
+        async function placeOrder() {
+            if (!currentUserName) { alert("Bitte zuerst deinen Namen eingeben!"); showNameModal(); return; }
+            if (cart.length === 0) return alert("Dein Warenkorb ist leer.");
+            if (!userAddress.street) {
+                alert("Bitte zuerst deine Lieferadresse eingeben!");
+                showAddressModal();
+                return;
+            }
+            const orderNumber = generateOrderNumber();
+            const finalTotal = calculateCartTotal();
+            const shipping = getShippingCost();
+
+            let orderText = `Name: ${currentUserName}\nBestellnummer: ${orderNumber}\nGesamt: ${finalTotal.toFixed(2).replace('.', ',')} €\n`;
+            orderText += `Lieferadresse:\n${userAddress.street}\n${userAddress.zip} ${userAddress.city}\n\n`;
+            orderText += shipping === 0 ? `Versand: Kostenlos (ab 150 €)\n` : `Versandkosten: ${shipping.toFixed(2).replace('.', ',')} €\n\nBestellte Produkte:\n`;
+
+            cart.forEach(item => {
+                const p = item.price || 0;
+                const nic = item.nicotine ? ` (${item.nicotine})` : '';
+                orderText += `• ${item.name}${nic} × ${item.qty} = ${(item.qty * p).toFixed(2).replace('.', ',')} €\n`;
+            });
+            if (discountPercent > 0) orderText += `• Rabattcode ${appliedDiscountCode} (${discountPercent}%) angewendet\n`;
+
+            saveToHistory(orderNumber, finalTotal, orderText);
+
+            addLoyaltyPoints(finalTotal);
+
+            const formData = new FormData();
+            formData.append("name", currentUserName);
+            formData.append("bestellnummer", orderNumber);
+            formData.append("adresse", `${userAddress.street}, ${userAddress.zip} ${userAddress.city}`);
+            formData.append("produkte", orderText);
+            formData.append("gesamt", `${finalTotal.toFixed(2).replace('.', ',')} €`);
+            formData.append("_subject", `WaveVapes Bestellung ${orderNumber} – ${userAddress.city}`);
+
+            try {
+                const response = await fetch(FORMSPREE_ENDPOINT, { method: "POST", body: formData, headers: { "Accept": "application/json" } });
+                if (response.ok) {
+                    showSuccessModal(orderNumber, orderText, finalTotal);
+                    cart = [];
+                    appliedDiscountCode = null;
+                    discountPercent = 0;
+                    document.getElementById("discount-status").innerHTML = "";
+                    updateCartDisplay();
+                    renderProducts();
+                    toggleCart();
+                    checkAndAutoRedeemLoyalty();
+                } else alert("Fehler beim Senden.");
+            } catch (e) { alert("Verbindungsfehler."); }
+        }
+        function showSuccessModal(orderNumber, details, total) {
+            document.getElementById("success-order-id").textContent = orderNumber;
+            document.getElementById("success-loyalty-info").innerHTML = `
+                <span class="text-emerald-400 font-medium">+${Math.floor(total)} Punkte erhalten!</span><br>
+                Du hast jetzt <span class="font-bold">${loyaltyPoints}</span> Loyalty-Punkte
+            `;
+
+            const infoHTML = `
+                <div class="space-y-3">
+                    <div><strong>Bank:</strong> ${BANK_NAME}</div>
+                    <div><strong>Empfänger:</strong> ${BANK_OWNER}</div>
+                    <div><strong>IBAN:</strong> <span class="font-mono break-all">${BANK_IBAN}</span></div>
+                    ${BANK_BIC ? `<div><strong>BIC:</strong> ${BANK_BIC}</div>` : ''}
+                    <div><strong>Betrag:</strong> <span class="font-bold text-xl">${total.toFixed(2).replace('.', ',')} €</span></div>
+                    <div class="pt-4 border-t border-white/20">
+                        <div class="text-amber-300 text-xs tracking-wider">VERWENDUNGSZWECK</div>
+                        <div class="font-mono bg-zinc-900 p-3 rounded-xl text-center text-base mt-1">${orderNumber}</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById("bank-payment-info").innerHTML = infoHTML;
+            const detailsDiv = document.getElementById("success-details");
+            detailsDiv.innerHTML = `<div class="font-mono text-xs leading-relaxed bg-black p-5 rounded-2xl">${details.replace(/\n/g, '<br>')}</div>`;
+            document.getElementById("success-modal").classList.remove("hidden");
+            document.getElementById("success-modal").classList.add("flex");
+        }
+        function closeSuccessModal() {
+            document.getElementById("success-modal").classList.add("hidden");
+            document.getElementById("success-modal").classList.remove("flex");
+        }
+        function filterProducts() {
+            renderProducts();
         }
 
         // ====================== START ======================
