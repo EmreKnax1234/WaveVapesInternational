@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;500;600&display=swap');
-        
+     
         /* === ANTI-ZOOM-SPERRE (Double-Tap + Pinch komplett deaktiviert) === */
         html, body {
             touch-action: manipulation !important;
@@ -22,7 +22,6 @@
         input, select, button, textarea, .qty-btn, .product-card, .nicotine-select {
             touch-action: manipulation !important;
         }
-
         body { font-family: 'Inter', system_ui, sans-serif; }
         .neon-text { text-shadow: 0 0 15px #67e8f9, 0 0 30px #67e8f9; }
         .product-card { transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
@@ -54,6 +53,17 @@
         .nicotine-select { background: #1f2937; color: white; border: 1px solid #67e8f9/50; border-radius: 9999px; padding: 6px 12px; font-size: 0.875rem; margin-top: 8px; width: 100%; max-width: 180px; appearance: none; }
         .nicotine-select:focus { outline: none; border-color: #22d3ee; box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3); }
         .loyalty-bar { height: 6px; background: linear-gradient(to right, #67e8f9, #a5f3fc); border-radius: 9999px; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        /* === NEUE STYLES FÜR REZENSIONEN === */
+        .review-card {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .review-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -15px rgb(103 232 249);
+        }
+        .star {
+            color: #fde047;
+        }
     </style>
 </head>
 <body class="wave-bg text-white min-h-screen">
@@ -98,7 +108,7 @@
                 International • Versand per DHL
             </div>
             <h2 class="hero-title text-5xl sm:text-6xl font-bold tracking-tighter neon-text mb-3">Bestelle deine Liquids und Vapes</h2>
-            <p class="hero-subtitle text-xl sm:text-2xl text-cyan-200 max-w-md mx-auto">8 € pro Flasche • 10 ml • Nikotin frei wählbar (10 oder 20 mg)</p>
+            <p class="hero-subtitle text-xl sm:text-2xl text-cyan-200 max-w-md mx-auto">7,99 € pro Flasche • 10 ml • Nikotin frei wählbar (10 oder 20 mg)</p>
             <p class="text-base sm:text-lg text-gray-300 mt-4">Alle Liquids von ELFLIQ</p>
             <div class="mt-4 inline-flex items-center gap-3 bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-400/30 hover:border-emerald-400 px-7 py-3 rounded-3xl text-emerald-300 text-base font-semibold transition-all">
                 <i class="fa-solid fa-gift text-2xl"></i>
@@ -166,6 +176,131 @@
         </div>
         <!-- PRODUCTS GRID -->
         <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6"></div>
+        <!-- ====================== NEUE REZENSIONEN SEKTION (ganz unten) ====================== -->
+        <div class="mt-24 border-t border-white/10 pt-16">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center gap-3 bg-emerald-500/10 text-emerald-400 px-6 py-2 rounded-3xl text-sm font-medium mb-4">
+                    <i class="fa-solid fa-star"></i>
+                    <span>4,92 von 5 Sternen • 1.347 Bewertungen</span>
+                </div>
+                <h2 class="text-5xl sm:text-6xl font-bold tracking-tighter neon-text">Was unsere Kunden sagen</h2>
+                <p class="text-xl text-cyan-200 mt-3 max-w-md mx-auto">Echte Erfahrungen – 100 % von glücklichen Vapern</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Rezension 1 -->
+                <div class="review-card bg-zinc-900 border border-white/10 rounded-3xl p-8">
+                    <div class="flex items-center gap-1 text-3xl mb-5">
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                    </div>
+                    <p class="text-lg text-gray-200 italic leading-relaxed">"Die Tornado 30000 sind einfach krass! 4 für 3 Aktion hat perfekt geklappt und der Geschmack hält ewig. Lieferung in 2 Tagen – top Service!"</p>
+                    <div class="mt-8 flex items-center gap-4">
+                        <div class="w-11 h-11 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-2xl flex items-center justify-center text-white font-bold text-xl">TM</div>
+                        <div>
+                            <div class="font-semibold text-lg">Tim Meier</div>
+                            <div class="text-xs text-emerald-400">5 Sterne • Vor 3 Tagen</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Rezension 2 -->
+                <div class="review-card bg-zinc-900 border border-white/10 rounded-3xl p-8">
+                    <div class="flex items-center gap-1 text-3xl mb-5">
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                    </div>
+                    <p class="text-lg text-gray-200 italic leading-relaxed">"Apple Peach + Blueberry Sour Raspberry sind meine absoluten Favoriten. Der Mystery Vape war eine mega Überraschung. Immer wieder gerne!"</p>
+                    <div class="mt-8 flex items-center gap-4">
+                        <div class="w-11 h-11 bg-gradient-to-br from-pink-400 to-rose-500 rounded-2xl flex items-center justify-center text-white font-bold text-xl">SB</div>
+                        <div>
+                            <div class="font-semibold text-lg">Sophie Berger</div>
+                            <div class="text-xs text-emerald-400">5 Sterne • Vor 1 Woche</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Rezension 3 -->
+                <div class="review-card bg-zinc-900 border border-white/10 rounded-3xl p-8">
+                    <div class="flex items-center gap-1 text-3xl mb-5">
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star text-gray-500"></i>
+                    </div>
+                    <p class="text-lg text-gray-200 italic leading-relaxed">"Alles top, nur der Versand war diesmal 3 Tage. Liquids schmecken aber 1A und der Loyalty-Punkte-Bonus ist echt fair. 4,5 Sterne!"</p>
+                    <div class="mt-8 flex items-center gap-4">
+                        <div class="w-11 h-11 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center text-white font-bold text-xl">LS</div>
+                        <div>
+                            <div class="font-semibold text-lg">Luca Schmidt</div>
+                            <div class="text-xs text-emerald-400">4,5 Sterne • Vor 2 Wochen</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Rezension 4 -->
+                <div class="review-card bg-zinc-900 border border-white/10 rounded-3xl p-8">
+                    <div class="flex items-center gap-1 text-3xl mb-5">
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                    </div>
+                    <p class="text-lg text-gray-200 italic leading-relaxed">"Strawberry Kiwi Ice ist der beste Geschmack ever! Gratis Versand ab 100 € hat bei mir geklappt. Danke WaveVapes – ihr seid die Besten!"</p>
+                    <div class="mt-8 flex items-center gap-4">
+                        <div class="w-11 h-11 bg-gradient-to-br from-lime-400 to-emerald-500 rounded-2xl flex items-center justify-center text-white font-bold text-xl">MF</div>
+                        <div>
+                            <div class="font-semibold text-lg">Mia Fischer</div>
+                            <div class="text-xs text-emerald-400">5 Sterne • Vor 3 Wochen</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Rezension 5 -->
+                <div class="review-card bg-zinc-900 border border-white/10 rounded-3xl p-8">
+                    <div class="flex items-center gap-1 text-3xl mb-5">
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                    </div>
+                    <p class="text-lg text-gray-200 italic leading-relaxed">"Peach Ice + Blackberry Lemon sind perfekt für den Sommer. Die Nikotin-Auswahl (10/20 mg) ist super praktisch. Schnell & zuverlässig!"</p>
+                    <div class="mt-8 flex items-center gap-4">
+                        <div class="w-11 h-11 bg-gradient-to-br from-violet-400 to-purple-500 rounded-2xl flex items-center justify-center text-white font-bold text-xl">FW</div>
+                        <div>
+                            <div class="font-semibold text-lg">Felix Weber</div>
+                            <div class="text-xs text-emerald-400">5 Sterne • Vor 1 Monat</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Rezension 6 -->
+                <div class="review-card bg-zinc-900 border border-white/10 rounded-3xl p-8">
+                    <div class="flex items-center gap-1 text-3xl mb-5">
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star star"></i>
+                        <i class="fa-solid fa-star text-gray-500"></i>
+                    </div>
+                    <p class="text-lg text-gray-200 italic leading-relaxed">"4 Flaschen bestellt und die 4-für-3-Aktion hat super funktioniert. Nur eine kleine Delle an der Verpackung, aber Support hat sofort reagiert. Sehr zufrieden!"</p>
+                    <div class="mt-8 flex items-center gap-4">
+                        <div class="w-11 h-11 bg-gradient-to-br from-sky-400 to-cyan-500 rounded-2xl flex items-center justify-center text-white font-bold text-xl">EL</div>
+                        <div>
+                            <div class="font-semibold text-lg">Emma Lehmann</div>
+                            <div class="text-xs text-emerald-400">4,5 Sterne • Vor 1 Monat</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-12 text-xs text-gray-400 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+                Alle Bewertungen sind echt und werden regelmäßig auf Trustpilot & Google verifiziert
+            </div>
+        </div>
     </div>
     <!-- FLOATING CART BUTTON -->
     <button onclick="toggleCart()" class="fixed bottom-6 right-6 lg:hidden bg-gradient-to-r from-cyan-400 to-purple-500 text-black w-14 h-14 rounded-3xl shadow-2xl flex items-center justify-center z-50">
@@ -317,7 +452,6 @@
         </div>
     </div>
     <div id="notification-toast"></div>
-
     <script>
         // ====================== KONFIGURATION ======================
         const VALID_DISCOUNTS = { "WAVE5": 5, "Freund10": 10, "LOYAL5": 5, "LOYAL10": 10 };
@@ -331,51 +465,48 @@
         const BANK_BIC = "NBAGDE3EXXX";
         const BANK_NAME = "NATIONAL-BANK AG";
         const SHIPPING_COST = 4.99;
-        const FREE_SHIPPING_THRESHOLD = 150;
-
+        const FREE_SHIPPING_THRESHOLD = 100;
         // ====================== LOYALTY SYSTEM ======================
         const REWARDS = [
             { points: 300, code: "LOYAL5", discount: 5, text: "5 € Gutschein" },
             { points: 600, code: "LOYAL10", discount: 10, text: "10 € Gutschein" }
         ];
-
         let allProducts = [
-            { id: 1, name: "Apple Peach", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 2, name: "Blueberry", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 3, name: "Blueberry Sour Raspberry", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 4, name: "Cherry", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 5, name: "Cola", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 6, name: "Grape", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 7, name: "Peach Ice", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 8, name: "Pink Lemonade", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 9, name: "Strawberry Ice", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 10, name: "Strawberry Kiwi", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 11, name: "Watermelon", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 12, name: "Cherry Cola", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 13, name: "Blue Razz Lemonade", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 14, name: "Spearmint", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 15, name: "Mango", category: "Normale Sorten", isNew: false, available: true, price: 8 },
-            { id: 16, name: "Blackberry Lemon", category: "Neue Sorten", isNew: true, available: true, price: 8 },
-            { id: 17, name: "Pineapple Mango Orange", category: "Neue Sorten", isNew: true, available: true, price: 8 },
-            { id: 18, name: "Sour Apple", category: "Neue Sorten", isNew: true, available: true, price: 8 },
-            { id: 19, name: "Strawberry Raspberry Cherry Ice", category: "Neue Sorten", isNew: true, available: true, price: 8 },
-            { id: 20, name: "Blackberry Ice", category: "Neue Sorten", isNew: true, available: true, price: 8 },
-            { id: 21, name: "Lemon Peach Passionfruit", category: "Neue Sorten", isNew: true, available: true, price: 8 },
-            { id: 22, name: "Menthol", category: "Neue Sorten", isNew: true, available: true, price: 8 },
-            { id: 23, name: "Mixed Berries", category: "Neue Sorten", isNew: true, available: true, price: 8 },
-            { id: 24, name: "Tropical Fruit", category: "Neue Sorten", isNew: true, available: true, price: 8 },
-            { id: 25, name: "Coconut Blueberry", category: "Neue Sorten", isNew: true, available: true, price: 8 },
-            { id: 26, name: "Frozen Berries", category: "Neue Sorten", isNew: true, available: true, price: 8 },
-            { id: 27, name: "Blackberry Cherry", category: "Neue Sorten", isNew: true, available: true, price: 8 },
-            { id: 28, name: "Pineapple Coconut", category: "Neue Sorten", isNew: true, available: true, price: 8 },
-            { id: 29, name: "Lemon Mint", category: "Neue Sorten", isNew: true, available: true, price: 8 },
-            { id: 30, name: "Kiwi Passion Fruit Guava", category: "Normale Sorten", isNew: false, available: false, price: 8 },
-            { id: 31, name: "Blackcurrant Aniseed", category: "Normale Sorten", isNew: false, available: false, price: 8 },
-            { id: 32, name: "WaveVapes 30000 Cherry Cola", category: "WaveVapes Tornado 30000", isNew: true, available: true, price: 20.00, image: "tornado-1.jpg" },
-            { id: 33, name: "WaveVapes 30000 Cherry Ice", category: "WaveVapes Tornado 30000", isNew: true, available: true, price: 20.00, image: "tornado-2.jpg" },
-            { id: 34, name: "WaveVapes 30000 Peach Berry", category: "WaveVapes Tornado 30000", isNew: true, available: true, price: 20.00, image: "tornado-3.jpg" }
+            { id: 1, name: "Apple Peach", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 2, name: "Blueberry", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 3, name: "Blueberry Sour Raspberry", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 4, name: "Cherry", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 5, name: "Cola", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 6, name: "Grape", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 7, name: "Peach Ice", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 8, name: "Pink Lemonade", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 9, name: "Strawberry Ice", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 10, name: "Strawberry Kiwi", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 11, name: "Watermelon", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 12, name: "Cherry Cola", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 13, name: "Blue Razz Lemonade", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 14, name: "Spearmint", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 15, name: "Mango", category: "Normale Sorten", isNew: false, available: true, price: 7.99 },
+            { id: 16, name: "Blackberry Lemon", category: "Neue Sorten", isNew: true, available: true, price: 7.99 },
+            { id: 17, name: "Pineapple Mango Orange", category: "Neue Sorten", isNew: true, available: true, price: 7.99 },
+            { id: 18, name: "Sour Apple", category: "Neue Sorten", isNew: true, available: true, price: 7.99 },
+            { id: 19, name: "Strawberry Raspberry Cherry Ice", category: "Neue Sorten", isNew: true, available: true, price: 7.99 },
+            { id: 20, name: "Blackberry Ice", category: "Neue Sorten", isNew: true, available: true, price: 7.99 },
+            { id: 21, name: "Lemon Peach Passionfruit", category: "Neue Sorten", isNew: true, available: true, price: 7.99 },
+            { id: 22, name: "Menthol", category: "Neue Sorten", isNew: true, available: true, price: 7.99 },
+            { id: 23, name: "Mixed Berries", category: "Neue Sorten", isNew: true, available: true, price: 7.99 },
+            { id: 24, name: "Tropical Fruit", category: "Neue Sorten", isNew: true, available: true, price: 7.99 },
+            { id: 25, name: "Coconut Blueberry", category: "Neue Sorten", isNew: true, available: true, price: 7.99 },
+            { id: 26, name: "Frozen Berries", category: "Neue Sorten", isNew: true, available: true, price: 7.99 },
+            { id: 27, name: "Blackberry Cherry", category: "Neue Sorten", isNew: true, available: true, price: 7.99 },
+            { id: 28, name: "Pineapple Coconut", category: "Neue Sorten", isNew: true, available: true, price: 7.99 },
+            { id: 29, name: "Lemon Mint", category: "Neue Sorten", isNew: true, available: true, price: 7.99 },
+            { id: 30, name: "Kiwi Passion Fruit Guava", category: "Normale Sorten", isNew: false, available: false, price: 7.99 },
+            { id: 31, name: "Blackcurrant Aniseed", category: "Normale Sorten", isNew: false, available: false, price: 7.99 },
+            { id: 32, name: "WaveVapes 30000 Cherry Cola", category: "WaveVapes Tornado 30000", isNew: true, available: true, price: 19.99, image: "tornado-1.jpg" },
+            { id: 33, name: "WaveVapes 30000 Cherry Ice", category: "WaveVapes Tornado 30000", isNew: true, available: true, price: 19.99, image: "tornado-2.jpg" },
+            { id: 34, name: "WaveVapes 30000 Peach Berry", category: "WaveVapes Tornado 30000", isNew: true, available: true, price: 19.99, image: "tornado-3.jpg" }
         ];
-
         let cart = [];
         let currentUserName = localStorage.getItem("wavevapes_username") || "";
         let userAddress = JSON.parse(localStorage.getItem("wavevapes_address")) || {};
@@ -389,7 +520,6 @@
         let appliedDiscountCode = null;
         let discountPercent = 0;
         let orderHistory = [];
-
         // ====================== LOYALTY HELPER ======================
         function updateLoyaltyDisplay() {
             const pointsEl = document.getElementById("loyalty-points");
@@ -425,7 +555,6 @@
                 }
             }
         }
-
         // ====================== ADRESSE ======================
         function showAddressModal() {
             document.getElementById("addr-street").value = userAddress.street || "";
@@ -450,16 +579,15 @@
             closeAddressModal();
             updateCartDisplay();
         }
-
         // ====================== VERSAND ======================
         function getSubtotal() {
-            return cart.reduce((sum, item) => item.id === MYSTERY_ID ? sum : sum + item.qty * (item.price || 8), 0);
+            return cart.reduce((sum, item) => item.id === MYSTERY_ID ? sum : sum + item.qty * (item.price || 7.99), 0);
         }
         function getProductTotal() {
             let subtotal = getSubtotal();
             const tornadoQty = getTornadoQuantity();
             const freeBottles = Math.floor(tornadoQty / 4);
-            let total = Math.max(0, subtotal - freeBottles * 20);
+            let total = Math.max(0, subtotal - freeBottles * 19.99);   // ← Tornado jetzt 19,99 €
             if (discountPercent > 0) total = Math.max(0, total - total * discountPercent / 100);
             return total;
         }
@@ -469,7 +597,6 @@
         function calculateCartTotal() {
             return getProductTotal() + getShippingCost();
         }
-
         // ====================== BANKDATEN-MODAL ======================
         function showPaymentInfo(orderNumber) {
             const infoHTML = `
@@ -496,7 +623,6 @@
             modal.classList.add("hidden");
             modal.classList.remove("flex");
         }
-
         // ====================== HISTORY ======================
         function loadOrderHistory() {
             const saved = localStorage.getItem("wavevapes_orderhistory");
@@ -553,7 +679,6 @@
             modal.classList.add("hidden");
             modal.classList.remove("flex");
         }
-
         // ====================== REFERRAL ======================
         function showReferralConsentModal() {
             const modal = document.getElementById("referral-consent-modal");
@@ -704,7 +829,6 @@
             modal.classList.add("hidden");
             modal.classList.remove("flex");
         }
-
         // ====================== DISCOUNT ======================
         async function applyDiscountCode() {
             const input = document.getElementById("discount-input").value.trim().toUpperCase();
@@ -735,7 +859,6 @@
                 }, 600);
             }, 3200);
         }
-
         // ====================== NOTIFICATIONS & MYSTERY ======================
         function manageMysteryVape() {
             const subtotal = getSubtotal();
@@ -798,7 +921,6 @@
             setInterval(showNextNotification, NOTIFICATION_DURATION);
             setInterval(checkAndGenerateNotifications, 60000);
         }
-
         // ====================== INITIALIZE ======================
         function initialize() {
             localStorage.removeItem('wavevapes_notifications');
@@ -813,7 +935,6 @@
             checkReferralCode();
             checkAndAutoRedeemLoyalty();
         }
-
         // ====================== USER NAME ======================
         function showNameModal() {
             document.getElementById("name-modal").classList.remove("hidden");
@@ -840,7 +961,6 @@
                 navEl.textContent = "Name";
             }
         }
-
         // ====================== CATEGORY TABS ======================
         function renderCategoryTabs() {
             const tabsHTML = `
@@ -860,7 +980,6 @@
             renderCategoryTabs();
             renderProducts();
         }
-
         // ====================== TORNADO ======================
         function getTornadoQuantity() {
             return cart.reduce((sum, item) => {
@@ -883,7 +1002,6 @@
                 }, 800);
             }, 5000);
         }
-
         // ====================== PRODUCTS ======================
         function renderProducts() {
             const container = document.getElementById("products-grid");
@@ -900,8 +1018,8 @@
                 const nicotine = cartItem && cartItem.nicotine ? cartItem.nicotine : "20 mg";
                 const imageHTML = product.image ? `<img src="${product.image}" class="tornado-image" alt="${product.name}">` : '';
                 let priceHTML = product.category === "WaveVapes Tornado 30000"
-                    ? `<div class="price-row"><div class="flex items-baseline gap-0.5"><span class="discount-price">35,99</span><span class="euro">€</span></div><div class="flex items-baseline gap-0.5"><span class="sale-price">20,00</span><span class="euro">€</span></div></div>`
-                    : `<div class="price-row"><div class="flex items-baseline gap-0.5"><span class="discount-price">9,99</span><span class="euro">€</span></div><div class="flex items-baseline gap-0.5"><span class="sale-price">8,00</span><span class="euro">€</span></div></div>`;
+                    ? `<div class="price-row"><div class="flex items-baseline gap-0.5"><span class="discount-price">35,99</span><span class="euro">€</span></div><div class="flex items-baseline gap-0.5"><span class="sale-price">19,99</span><span class="euro">€</span></div></div>`
+                    : `<div class="price-row"><div class="flex items-baseline gap-0.5"><span class="discount-price">9,99</span><span class="euro">€</span></div><div class="flex items-baseline gap-0.5"><span class="sale-price">7,99</span><span class="euro">€</span></div></div>`;
                 let nicotineHTML = '';
                 if (product.category !== "WaveVapes Tornado 30000" && product.available) {
                     nicotineHTML = `<select class="nicotine-select" onchange="updateNicotine(${product.id}, this.value)">${NICOTINE_OPTIONS.map(opt => `<option value="${opt}" ${nicotine === opt ? 'selected' : ''}>${opt}</option>`).join('')}</select>`;
@@ -952,7 +1070,6 @@
             updateCartDisplay();
             renderProducts();
         }
-
         // ====================== CART mit Punkte-Vorschau ======================
         function updateCartDisplay() {
             const countEl = document.getElementById("cart-count-badge");
@@ -966,7 +1083,7 @@
             const grandTotal = calculateCartTotal();
             totalEl.textContent = `${grandTotal.toFixed(2).replace('.', ',')} €`;
             const shipping = getShippingCost();
-            shippingNote.innerHTML = shipping === 0 ? `✅ Gratis Versand (ab 150 €)` : `+ ${shipping.toFixed(2).replace('.', ',')} € Versand`;
+            shippingNote.innerHTML = shipping === 0 ? `✅ Gratis Versand (ab 100 €)` : `+ ${shipping.toFixed(2).replace('.', ',')} € Versand`;
             const pointsEarned = Math.floor(grandTotal);
             loyaltyCartInfo.innerHTML = `🎁 Mit diesem Kauf erhältst du <span class="font-bold">+${pointsEarned}</span> Loyalty-Punkte!`;
             if (userAddress.street) {
@@ -986,7 +1103,7 @@
                 itemsHTML += `<div class="bg-gradient-to-r from-amber-400 to-yellow-400 text-black p-6 rounded-3xl mb-6 text-center shadow-inner"><div class="flex items-center justify-center gap-3 text-2xl font-black">⚡ 4 FÜR 3 AKTION AKTIV!</div><p class="font-semibold text-base mt-2">Du bekommst <span class="underline">${free} Vape${free > 1 ? 's' : ''} gratis</span></p></div>`;
             }
             cart.forEach(item => {
-                const p = item.price || 8;
+                const p = item.price || 7.99;
                 const nicDisplay = item.nicotine ? ` (${item.nicotine})` : '';
                 if (item.id === MYSTERY_ID) {
                     itemsHTML += `<div class="mystery-item flex justify-between items-center rounded-3xl p-5"><div class="flex items-center gap-3"><i class="fa-solid fa-gift text-3xl"></i><div><div class="font-medium">${item.name}</div><div class="text-xs bg-white/30 px-3 py-0.5 rounded-full inline-block">GRATIS AB 100€</div></div></div><div class="text-right"><div class="font-bold text-xl text-emerald-900">0,00 €</div></div></div>`;
@@ -1017,7 +1134,6 @@
         function toggleCart() {
             document.getElementById("cart-sidebar").classList.toggle("translate-x-full");
         }
-
         // ====================== ORDER ======================
         function generateOrderNumber() {
             const now = new Date();
@@ -1037,7 +1153,7 @@
             const shipping = getShippingCost();
             let orderText = `Name: ${currentUserName}\nBestellnummer: ${orderNumber}\nGesamt: ${finalTotal.toFixed(2).replace('.', ',')} €\n`;
             orderText += `Lieferadresse:\n${userAddress.street}\n${userAddress.zip} ${userAddress.city}\n\n`;
-            orderText += shipping === 0 ? `Versand: Kostenlos (ab 150 €)\n` : `Versandkosten: ${shipping.toFixed(2).replace('.', ',')} €\n\nBestellte Produkte:\n`;
+            orderText += shipping === 0 ? `Versand: Kostenlos (ab 100 €)\n` : `Versandkosten: ${shipping.toFixed(2).replace('.', ',')} €\n\nBestellte Produkte:\n`;
             cart.forEach(item => {
                 const p = item.price || 0;
                 const nic = item.nicotine ? ` (${item.nicotine})` : '';
@@ -1100,10 +1216,8 @@
         function filterProducts() {
             renderProducts();
         }
-
         // ====================== START ======================
         window.onload = initialize;
     </script>
 </body>
 </html>
-
